@@ -1,0 +1,256 @@
+---
+import SubpageFooter from "./SubpageFooter.astro";
+import SubpageHeader from "./SubpageHeader.astro";
+import SubpageMenu from "./SubpageMenu.astro";
+import type { Locale } from "../i18n/config";
+import { routePath } from "../i18n/routes";
+import { localizeDeep, t } from "../i18n/translate";
+
+type CorporatePage = "about" | "vision" | "quality" | "certificates";
+
+interface Props { page: CorporatePage; locale: Locale; }
+const { page, locale } = Astro.props;
+const en = locale === "en";
+
+interface CorporatePageContent {
+  pageName: string;
+  crumb: string;
+  eyebrow: string;
+  title: string;
+  intro: string;
+  overviewTitle: string;
+  overview: string[];
+  highlights: string[][];
+  principlesTitle: string;
+  principles: string[];
+  certificates?: { title: string; description: string; href: string }[];
+  next: { label: string; href: string };
+}
+
+const pages: Record<CorporatePage, CorporatePageContent> = {
+  about: {
+    pageName: "Hakkımızda",
+    crumb: "Hakkımızda",
+    eyebrow: "Rota Robotik",
+    title: "Akıllı Mühendislik ile <span>Üretime Yön Veriyoruz</span>",
+    intro: "Rota Robotik Sistemler, 2023 yılında İstanbul’da robot entegratörü olarak kuruldu. Deneyimli mühendislik ekibimizle robotik sistemlerin tasarımından devreye alınmasına kadar tüm süreci yönetiyoruz.",
+    overviewTitle: "Fikirden çalışan sisteme, uçtan uca mühendislik.",
+    overview: [
+      "Üretim süreçlerini daha verimli, esnek ve güvenilir kılan robotik çözümler geliştiriyoruz. Her projeyi; doğru ihtiyaç analizi, güçlü entegrasyon bilgisi ve sahadaki uygulama deneyimiyle ele alıyoruz.",
+      "Mekanik tasarım, elektrik, otomasyon, robot yazılımı ve devreye alma ekiplerimiz aynı hedef için birlikte çalışır. Böylece proje boyunca tek muhataplı, ölçülebilir ve sürdürülebilir bir çözüm süreci sunarız.",
+    ],
+    highlights: [
+      ["01", "Deneyimli Ekip", "Yılların sahaya dayalı bilgi birikimini projelerimize taşırız."],
+      ["02", "Uçtan Uca Çözüm", "Tasarımdan devreye almaya kadar tüm disiplinleri bir araya getiririz."],
+      ["03", "Saha Odaklılık", "Üretimde karşılığı olan, kullanılabilir ve güvenilir sistemler tasarlarız."],
+      ["04", "Sürekli Gelişim", "Teknolojiyi ve süreçleri her projede daha ileri taşımayı hedefleriz."],
+    ],
+    principlesTitle: "Nasıl çalışıyoruz?",
+    principles: ["İhtiyacı dinler ve doğru kapsamı belirleriz.", "Tasarım kararlarını üretim hedefleriyle birlikte alırız.", "Sistemi sahada test eder, devreye alır ve teslim ederiz."],
+    next: { label: "Vizyon & Misyon", href: "/vizyon-misyon/" },
+  },
+  vision: {
+    pageName: "Vizyon & Misyon",
+    crumb: "Vizyon & Misyon",
+    eyebrow: "Rota Robotik",
+    title: "Mühendislikle <span>Geleceğin Üretimini Tasarlıyoruz</span>",
+    intro: "Teknolojinin üretime değer kattığı, insan ve makinenin aynı hedef için uyum içinde çalıştığı daha verimli bir geleceğe inanıyoruz.",
+    overviewTitle: "Geleceğin üretiminde güvenilir çözüm ortağı olmak.",
+    overview: [
+      "Vizyonumuz; robotik, otomasyon ve ileri üretim teknolojilerinde fark yaratan uygulamalar geliştirerek sektörün dönüşümüne yön veren bir mühendislik markası olmaktır.",
+      "Misyonumuz ise müşterilerimizin ihtiyaçlarını doğru anlayıp, ölçülebilir fayda sağlayan, sürdürülebilir ve kullanımı kolay sistemleri güvenle hayata geçirmektir.",
+    ],
+    highlights: [
+      ["01", "Vizyonumuz", "Akıllı üretim sistemleriyle geleceğin sanayisine yön veren çözüm ortağı olmak."],
+      ["02", "Misyonumuz", "Her projede doğru mühendisliği, verimli teknolojiyi ve güvenilir uygulamayı birleştirmek."],
+      ["03", "Değerimiz", "Şeffaf iletişim, teknik sahiplenme ve sürekli gelişim."],
+      ["04", "Odağımız", "İnsan, teknoloji ve üretim arasındaki bağı güçlendirmek."],
+    ],
+    principlesTitle: "Bizi yönlendiren yaklaşım.",
+    principles: ["Uzun vadeli değer yaratan çözümler geliştiririz.", "İş birliklerini karşılıklı güven ve şeffaflıkla kurarız.", "Yenilikçi teknolojileri sahadaki gerçek ihtiyaçlarla buluştururuz."],
+    next: { label: "Kalite Politikamız", href: "/kalite-politikamiz/" },
+  },
+  quality: {
+    pageName: "Kalite Politikamız",
+    crumb: "Kalite Politikamız",
+    eyebrow: "Rota Robotik",
+    title: "Kaliteyi Tasarımın <span>İlk Adımında Kuruyoruz</span>",
+    intro: "Kalite bizim için yalnızca teslim anında yapılan bir kontrol değil; ihtiyaç analizinden devreye alma sürecine kadar tüm kararların ortak ölçütüdür.",
+    overviewTitle: "Her detayda izlenebilir, güvenilir ve sürdürülebilir kalite.",
+    overview: [
+      "Projelerimizi teknik gereklilikleri, proses güvenilirliğini ve kullanıcı deneyimini birlikte değerlendirerek planlarız. Tasarım, imalat, yazılım ve saha uygulamalarında ölçülebilir kontrol noktaları oluştururuz.",
+      "Sürekli iyileştirme yaklaşımımızla geri bildirimleri sürecin parçası hâline getirir; teslim ettiğimiz sistemlerin performansını ve sürdürülebilirliğini önceliklendiririz.",
+    ],
+    highlights: [
+      ["01", "Doğru Kapsam", "Proje hedeflerini ve teknik gereklilikleri başlangıçta netleştiririz."],
+      ["02", "Kontrollü Süreç", "Tasarım ve uygulama adımlarını tanımlı kontrol noktalarıyla yürütürüz."],
+      ["03", "Saha Doğrulaması", "Sistemin üretim koşullarındaki çalışmasını devreye alma sürecinde doğrularız."],
+      ["04", "Sürekli İyileştirme", "Deneyimlerden öğrenir, süreçlerimizi ve çözümlerimizi geliştiririz."],
+    ],
+    principlesTitle: "Kalite anlayışımız.",
+    principles: ["Müşteri beklentilerini teknik doğrulukla karşılarız.", "İş güvenliği ve proses güvenilirliğini her aşamada gözetiriz.", "Teslim sonrasında da çözümün arkasında dururuz."],
+    next: { label: "Sertifikalar", href: "/sertifikalar/" },
+  },
+  certificates: {
+    pageName: "Sertifikalar",
+    crumb: "Sertifikalar",
+    eyebrow: "Rota Robotik",
+    title: "Yetkinliğimizi <span>Belgelendirilmiş Süreçlerle Destekliyoruz</span>",
+    intro: "Kalite, iş güvenliği ve proje gerekliliklerine ilişkin güncel dokümanlarımızı, iş ortaklarımızın ve projelerimizin ihtiyaçlarına göre şeffaf biçimde paylaşırız.",
+    overviewTitle: "Doküman yönetiminde açıklık ve izlenebilirlik.",
+    overview: [
+      "Her projenin kapsamı farklıdır. Bu nedenle uygunluk, kalite ve teknik dokümanları işin gereksinimlerine göre yönetir; gerekli belgeleri proje akışı içinde erişilebilir hâle getiririz.",
+      "Sertifika ve yetkinlik dokümanlarımızın güncel sürümleri için ekibimizle iletişime geçebilir, proje gereksinimlerinize uygun belge setini talep edebilirsiniz.",
+    ],
+    highlights: [
+      ["01", "Kalite Dokümanları", "Proje kapsamına uygun kalite ve kontrol kayıtlarının yönetimi."],
+      ["02", "Teknik Uygunluk", "Sistem ve bileşen gerekliliklerinin izlenebilir biçimde değerlendirilmesi."],
+      ["03", "Saha Güvenliği", "Uygulama öncesi ve sırasında gerekli süreçlerin planlanması."],
+      ["04", "Belge Talebi", "Güncel dokümanların ilgili proje ve iş ortaklarıyla paylaşılması."],
+    ],
+    principlesTitle: "Belge ve kayıt yaklaşımımız.",
+    principles: ["Güncel dokümanları proje ihtiyaçlarına göre hazırlarız.", "İzlenebilirlik için bilgiyi doğru ekiplerle zamanında paylaşırız.", "Gereksinimleri düzenli gözden geçirerek dosyaları güncel tutarız."],
+    certificates: [
+      { title: "ISO 9001:2015", description: "Kalite Yönetim Sistemi", href: "/media/certificates/quality-management-system.pdf" },
+      { title: "ISO 14001:2015", description: "Çevre Yönetim Sistemi", href: "/media/certificates/environmental-management-system.pdf" },
+    ],
+    next: { label: "Referanslarımız", href: "/referanslar/" },
+  },
+};
+
+const content = localizeDeep(pages[page], locale);
+const corporateCoverImages: Record<CorporatePage, { src: string; width: number; height: number }> = {
+  about: { src: "/media/expertise/commissioning/image-01.webp", width: 1672, height: 941 },
+  vision: { src: "/media/expertise/process-design/image-01.webp", width: 1801, height: 889 },
+  quality: { src: "/media/expertise/measurement/image-01.webp", width: 1537, height: 1287 },
+  certificates: { src: "/media/expertise/electric-design/image-01.webp", width: 835, height: 582 },
+};
+const coverImage = corporateCoverImages[page];
+---
+
+<div class={`corporate-detail corporate-detail--${page}`} data-corporate-detail>
+  <SubpageHeader locale={locale} pageName={content.pageName} />
+  <SubpageMenu locale={locale} />
+
+  <main>
+    <section class="corporate-hero">
+      <div class="corporate-hero__image" aria-hidden="true"><img src={coverImage.src} width={coverImage.width} height={coverImage.height} alt="" fetchpriority="high" /></div>
+      <div class="corporate-hero__copy">
+        <p>{content.eyebrow}</p>
+        <h1 set:html={content.title} />
+        <div class="corporate-hero__intro">{content.intro}</div>
+      </div>
+      <nav class="corporate-breadcrumb" aria-label={t(locale, "Sayfa yolu")}><a href={routePath("home", locale)}>{en ? "Home" : "Ana Sayfa"}</a><i aria-hidden="true">/</i><a href={routePath("about", locale)}>{en ? "Company" : "Kurumsal"}</a><i aria-hidden="true">/</i><strong>{content.crumb}</strong></nav>
+      <div class="corporate-hero__line" aria-hidden="true"></div>
+    </section>
+
+    <section class="corporate-overview">
+      <div class="corporate-overview__copy corporate-reveal" data-corporate-reveal>
+        <p class="corporate-eyebrow">{content.pageName}</p>
+        <h2>{content.overviewTitle}</h2>
+        {content.overview.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+      <div class="corporate-overview__visual corporate-reveal" data-corporate-reveal aria-hidden="true">
+        <img src={coverImage.src} width={coverImage.width} height={coverImage.height} alt="" loading="lazy" decoding="async" />
+        <i></i><i></i>
+      </div>
+    </section>
+
+    {content.certificates && (
+      <section class="corporate-certificates" aria-labelledby="certificates-title">
+        <div class="corporate-section-heading corporate-reveal" data-corporate-reveal>
+          <p class="corporate-eyebrow">{t(locale, "Sertifikalarımız")}</p>
+          <h2 id="certificates-title">{t(locale, "Uluslararası standartlarla doğrulanmış sistemler.")}</h2>
+        </div>
+        <div class="corporate-certificates__grid">
+          {content.certificates.map((certificate, index) => (
+            <article class="corporate-certificate corporate-reveal" data-corporate-reveal>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <div><h3>{certificate.title}</h3><p>{certificate.description}</p></div>
+              <a href={certificate.href} target="_blank" rel="noopener noreferrer" download aria-label={en ? `View or download the ${certificate.title} certificate PDF` : `${certificate.title} sertifikasını PDF olarak indir`}><span>{t(locale, "Sertifikayı Görüntüle / PDF İndir")}</span><i aria-hidden="true">↓</i></a>
+            </article>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <section class="corporate-highlights">
+      <div class="corporate-section-heading corporate-reveal" data-corporate-reveal>
+        <p class="corporate-eyebrow">{t(locale, "Yaklaşımımız")}</p>
+        <h2>{t(locale, "Sağlam bir projenin ortak noktaları.")}</h2>
+      </div>
+      <div class="corporate-highlights__grid">
+        {content.highlights.map(([number, title, description]) => (
+          <article class="corporate-highlight corporate-reveal" data-corporate-reveal>
+            <span>{number}</span><h3>{title}</h3><p>{description}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="corporate-principles">
+      <div class="corporate-principles__heading corporate-reveal" data-corporate-reveal>
+        <p class="corporate-eyebrow">Rota Robotik</p><h2>{content.principlesTitle}</h2>
+      </div>
+      <ol class="corporate-principles__list">
+        {content.principles.map((principle, index) => <li class="corporate-reveal" data-corporate-reveal><span>{String(index + 1).padStart(2, "0")}</span>{principle}</li>)}
+      </ol>
+    </section>
+
+    <a class="corporate-next corporate-reveal" href={content.next.href} data-corporate-reveal>
+      <span><small>{t(locale, "Sonraki Sayfa")}</small><strong>{content.next.label}</strong></span><i aria-hidden="true">→</i>
+    </a>
+  </main>
+
+  <SubpageFooter locale={locale} />
+</div>
+
+<script>
+  const corporateDetail = document.querySelector<HTMLElement>("[data-corporate-detail]");
+  const corporateReveals = Array.from(document.querySelectorAll<HTMLElement>("[data-corporate-reveal]"));
+  const corporateReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!corporateReducedMotion && "IntersectionObserver" in window) {
+    corporateDetail?.classList.add("corporate-detail--enhanced");
+    let corporateLastY = window.scrollY;
+    let corporateDirection: "up" | "down" = "down";
+    window.addEventListener("scroll", () => {
+      if (Math.abs(window.scrollY - corporateLastY) > 3) corporateDirection = window.scrollY > corporateLastY ? "down" : "up";
+      corporateLastY = window.scrollY;
+    }, { passive: true });
+    const corporateObserver = new IntersectionObserver((entries) => entries.forEach((entry) => {
+      const item = entry.target as HTMLElement;
+      item.classList.toggle("corporate-reveal--from-top", corporateDirection === "up");
+      item.classList.toggle("corporate-reveal--visible", entry.isIntersecting);
+    }), { threshold: .12, rootMargin: "0px 0px -10%" });
+    corporateReveals.forEach((item) => corporateObserver.observe(item));
+  }
+</script>
+
+<style>
+  :global(html:has(.corporate-detail)) { background: #f7f8f7; scroll-snap-type: none; }
+  :global(body:has(.corporate-detail)) { background: #f7f8f7; }
+  .corporate-detail { --corporate-gutter: clamp(28px,6vw,96px); overflow: clip; background: #f7f8f7; color: #263242; }
+  .corporate-hero { position: relative; isolation: isolate; display: grid; align-content: center; min-height: max(700px,100svh); padding: clamp(154px,18vh,220px) var(--corporate-gutter) clamp(100px,13vh,160px); overflow: hidden; }
+  .corporate-hero__image { position: absolute; z-index: -2; inset: 88px 0 0; overflow: hidden; background: #dceaf5; }
+  .corporate-hero__image::after { position: absolute; inset: 0; background: linear-gradient(90deg,rgba(247,249,249,.98) 0%,rgba(247,249,249,.92) 30%,rgba(247,249,249,.6) 53%,rgba(247,249,249,.12) 100%); content: ""; }
+  .corporate-hero__image img { width: 100%; height: 100%; object-fit: cover; object-position: center; opacity: .7; }
+  .corporate-hero__copy { max-width: min(760px,62vw); animation: corporate-hero-copy .9s cubic-bezier(.16,1,.3,1) .24s both; }
+  .corporate-hero__copy > p,.corporate-eyebrow { margin: 0 0 17px; color: var(--rota-green); font-size: 12px; font-weight: 700; letter-spacing: .13em; line-height: 1; text-transform: uppercase; }
+  .corporate-hero h1 { max-width: 760px; margin: 0; color: #2d3540; font-size: clamp(48px,5.15vw,88px); font-weight: 500; letter-spacing: -.067em; line-height: .95; }
+  .corporate-hero h1 :global(span) { color: transparent; background: linear-gradient(100deg,var(--rota-blue),var(--rota-teal),var(--rota-green)); background-clip: text; -webkit-background-clip: text; }
+  .corporate-hero__intro { max-width: 650px; margin-top: 32px; color: #526d89; font-size: clamp(17px,1.22vw,21px); line-height: 1.65; }
+  .corporate-breadcrumb { position: absolute; z-index: 2; bottom: clamp(44px,6vw,80px); left: var(--corporate-gutter); display: flex; flex-wrap: wrap; gap: 10px; align-items: center; color: #6b85a0; font-size: 13px; }
+  .corporate-breadcrumb a { color: inherit; text-decoration: none; }.corporate-breadcrumb i { color: var(--rota-teal); font-style: normal; }.corporate-breadcrumb strong { color: #2f4258; font-weight: 700; }.corporate-hero__line { position: absolute; right: var(--corporate-gutter); bottom: clamp(25px,3vw,48px); left: var(--corporate-gutter); height: 2px; background: linear-gradient(90deg,var(--rota-blue),var(--rota-teal),var(--rota-green)); }
+  .corporate-overview { display: grid; grid-template-columns: minmax(0,1fr) minmax(410px,.92fr); gap: clamp(56px,9vw,150px); align-items: center; padding: clamp(100px,12vw,180px) var(--corporate-gutter); background: #fff; }.corporate-overview__copy { max-width: 760px; }.corporate-overview h2,.corporate-section-heading h2,.corporate-principles h2 { margin: 0; color: #30343a; font-size: clamp(38px,3.75vw,66px); font-weight: 500; letter-spacing: -.06em; line-height: .98; }.corporate-overview__copy > p:not(.corporate-eyebrow) { max-width: 680px; margin: 24px 0 0; color: #607086; font-size: clamp(16px,1.15vw,20px); line-height: 1.7; }
+  .corporate-overview__visual { position: relative; isolation: isolate; width: min(100%,540px); aspect-ratio: 1; justify-self: center; border: 1px solid rgba(10,102,194,.16); border-radius: 50%; background: #dceaf5; box-shadow: 0 28px 64px rgba(0,46,78,.18); pointer-events: none; user-select: none; }.corporate-overview__visual::after { position: absolute; z-index: 1; inset: 0; border-radius: 50%; background: linear-gradient(145deg,rgba(10,102,194,.08),rgba(0,168,150,.2)); content: ""; }.corporate-overview__visual img { position: relative; z-index: 0; display: block; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; filter: saturate(.88) contrast(1.02); }.corporate-overview__visual i { position: absolute; z-index: -1; border: 1px solid rgba(0,168,150,.26); border-radius: 50%; }.corporate-overview__visual i:nth-of-type(1) { inset: -10%; }.corporate-overview__visual i:nth-of-type(2) { inset: -21%; border-color: rgba(10,102,194,.14); }
+  .corporate-certificates { padding: clamp(92px,11vw,160px) var(--corporate-gutter); background: linear-gradient(135deg,#f1f8f6,#fff 50%,#edf5fb); }.corporate-certificates .corporate-section-heading { max-width: none; }.corporate-certificates h2 { white-space: nowrap; font-size: clamp(38px,3.4vw,60px); }.corporate-certificates__grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); max-width: 1500px; gap: clamp(18px,2vw,28px); }.corporate-certificate { display: grid; grid-template-columns: 44px minmax(0,1fr); gap: 18px; align-content: space-between; min-height: 256px; padding: clamp(28px,3vw,42px); border: 1px solid rgba(7,101,170,.16); border-radius: 14px; background: rgba(255,255,255,.88); box-shadow: 0 14px 34px rgba(2,65,107,.06); transition: background .25s ease,box-shadow .25s ease,transform .25s ease; }.corporate-certificate:hover { background: #fff; box-shadow: 0 22px 46px rgba(2,65,107,.11); transform: translateY(-3px); }.corporate-certificate > span { color: var(--rota-teal); font-size: 12px; font-weight: 700; letter-spacing: .12em; }.corporate-certificate > div { display: grid; gap: 9px; }.corporate-certificate h3 { margin: 0; color: #2f3740; font-size: clamp(30px,2.55vw,43px); font-weight: 500; letter-spacing: -.06em; line-height: 1; }.corporate-certificate p { margin: 0; color: #65758a; font-size: 17px; line-height: 1.5; }.corporate-certificate a { display: inline-flex; grid-column: 1 / -1; justify-content: space-between; align-items: center; gap: 22px; min-height: 50px; padding: 0 18px 0 20px; border-radius: 999px; background: linear-gradient(100deg,var(--rota-blue),var(--rota-teal)); color: #fff; font-size: 14px; font-weight: 700; text-decoration: none; white-space: nowrap; transition: transform .22s ease,box-shadow .22s ease; }.corporate-certificate a:hover,.corporate-certificate a:focus-visible { box-shadow: 0 12px 28px rgba(0,105,175,.26); transform: translateY(-3px); }.corporate-certificate a i { display: grid; width: 25px; height: 25px; place-items: center; border: 1px solid rgba(255,255,255,.5); border-radius: 50%; font-size: 16px; font-style: normal; }
+  .corporate-highlights { padding: clamp(96px,11vw,165px) var(--corporate-gutter); background: linear-gradient(145deg,#edf5f4,#fff 50%,#eff7f2); }.corporate-section-heading { max-width: 940px; margin-bottom: clamp(46px,6vw,80px); }.corporate-highlights__grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); max-width: 1500px; border: 1px solid rgba(10,102,194,.14); background: rgba(10,102,194,.14); gap: 1px; }.corporate-highlight { min-height: 285px; padding: clamp(24px,3vw,44px); background: rgba(255,255,255,.94); transition: transform .3s ease,background .3s ease; }.corporate-highlight:hover { z-index: 1; background: #fff; transform: translateY(-6px); }.corporate-highlight > span { color: var(--rota-teal); font-size: 12px; font-weight: 700; letter-spacing: .13em; }.corporate-highlight h3 { margin: 48px 0 14px; color: #303841; font-size: clamp(22px,1.8vw,29px); font-weight: 500; letter-spacing: -.045em; line-height: 1.06; }.corporate-highlight p { margin: 0; color: #677381; font-size: 15px; line-height: 1.62; }
+  .corporate-principles { display: grid; grid-template-columns: minmax(0,.82fr) minmax(420px,1.18fr); gap: clamp(54px,9vw,150px); padding: clamp(104px,12vw,180px) var(--corporate-gutter); background: radial-gradient(circle at 12% 18%,rgba(0,168,150,.16),transparent 28%),#061827; color: #fff; }.corporate-principles h2 { color: #fff; }.corporate-principles__list { display: grid; margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(255,255,255,.2); }.corporate-principles__list li { display: grid; grid-template-columns: 55px 1fr; gap: 18px; align-items: center; min-height: 94px; border-bottom: 1px solid rgba(255,255,255,.2); color: rgba(255,255,255,.88); font-size: clamp(18px,1.45vw,24px); letter-spacing: -.025em; line-height: 1.25; }.corporate-principles__list span { color: var(--rota-green); font-size: 12px; font-weight: 700; letter-spacing: .12em; }
+  .corporate-next { display: flex; align-items: center; justify-content: space-between; gap: 34px; min-height: 200px; padding: 44px var(--corporate-gutter); background: linear-gradient(105deg,#0654aa,var(--rota-blue) 50%,#00a896); color: #fff; text-decoration: none; transition: filter .25s ease; }.corporate-next:hover,.corporate-next:focus-visible { filter: brightness(1.08); }.corporate-next small { display: block; margin-bottom: 8px; font-size: 11px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }.corporate-next strong { font-size: clamp(30px,3vw,52px); font-weight: 500; letter-spacing: -.06em; }.corporate-next > i { display: grid; width: clamp(58px,5vw,82px); aspect-ratio: 1; place-items: center; border: 1px solid rgba(255,255,255,.56); border-radius: 50%; background: rgba(255,255,255,.06); color: #fff; font-size: clamp(26px,2.4vw,42px); font-style: normal; font-weight: 300; line-height: 1; transition: background .25s ease,color .25s ease,transform .25s ease; }.corporate-next:hover > i,.corporate-next:focus-visible > i { background: #fff; color: var(--rota-blue); transform: translateX(6px); }
+  .corporate-detail--enhanced .corporate-reveal { opacity: 0; transform: translateY(34px); transition: opacity .65s ease,transform .75s cubic-bezier(.16,1,.3,1); }.corporate-detail--enhanced .corporate-reveal--from-top { transform: translateY(-28px); }.corporate-detail--enhanced .corporate-reveal--visible { opacity: 1; transform: translateY(0); }
+  @keyframes corporate-hero-copy { from { opacity: 0; transform: translateX(-42px); } to { opacity: 1; transform: translateX(0); } }
+  @media (max-width: 900px) { .corporate-hero { min-height: max(650px,92svh); }.corporate-hero__copy { max-width: min(700px,78vw); }.corporate-hero__image::after { background: linear-gradient(90deg,rgba(247,249,249,.96),rgba(247,249,249,.78) 52%,rgba(247,249,249,.33)); }.corporate-overview,.corporate-principles { grid-template-columns: 1fr; }.corporate-overview__visual { width: min(76vw,500px); }.corporate-certificates h2 { white-space: normal; }.corporate-certificates__grid { grid-template-columns: 1fr; }.corporate-highlights__grid { grid-template-columns: repeat(2,minmax(0,1fr)); }.corporate-principles { gap: 52px; } }
+  @media (max-width: 640px) { .corporate-hero { min-height: 710px; padding-top: 142px; }.corporate-hero__image { inset: 72px 0 0; }.corporate-hero__image::after { background: linear-gradient(180deg,rgba(247,249,249,.98),rgba(247,249,249,.85) 48%,rgba(247,249,249,.52)); }.corporate-hero__image img { opacity: .55; object-position: 62% center; }.corporate-hero__copy { max-width: 100%; }.corporate-hero h1 { font-size: clamp(44px,12vw,64px); }.corporate-hero__intro { margin-top: 24px; font-size: 16px; }.corporate-breadcrumb { bottom: 42px; font-size: 11px; }.corporate-hero__line { bottom: 22px; }.corporate-overview,.corporate-certificates,.corporate-highlights,.corporate-principles { padding-block: 82px; }.corporate-certificate { min-height: 0; }.corporate-certificate h3 { font-size: 30px; }.corporate-certificate a { width: 100%; font-size: 13px; }.corporate-highlights__grid { grid-template-columns: 1fr; }.corporate-highlight { min-height: 0; }.corporate-highlight h3 { margin-top: 32px; }.corporate-principles__list li { grid-template-columns: 42px 1fr; min-height: 84px; font-size: 17px; }.corporate-next { min-height: 150px; }.corporate-next strong { font-size: 28px; } }
+  @media (prefers-reduced-motion: reduce) { .corporate-hero__copy { animation: none; }.corporate-detail--enhanced .corporate-reveal { opacity: 1; transform: none; transition: none; } }
+</style>

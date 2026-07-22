@@ -1,0 +1,9 @@
+---
+import "leaflet/dist/leaflet.css";
+import TechnologiesPage from "./TechnologiesPage.astro";
+import type { Locale } from "../i18n/config";
+interface Props { locale?: Locale }
+const { locale = "en" } = Astro.props;
+---
+
+<TechnologiesPage variant="contact" locale={locale} />

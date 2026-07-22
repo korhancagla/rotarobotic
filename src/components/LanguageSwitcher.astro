@@ -1,0 +1,56 @@
+---
+import type { Locale } from "../i18n/config";
+
+interface Props { locale: Locale; href: string; variant?: "header" | "menu" | "desktop"; }
+const { locale, href, variant = "header" } = Astro.props;
+const otherLocale = locale === "en" ? "tr" : "en";
+const targetCode = otherLocale.toUpperCase();
+const targetName = otherLocale === "tr" ? "Türkçe" : "English";
+const tooltip = otherLocale === "tr" ? "Türkçe sayfaya geç" : "Switch to English";
+const className = variant === "desktop"
+  ? "rota-menu-desktop__language"
+  : variant === "header"
+    ? "rota-header__language"
+    : "language-switcher__mobile-trigger";
+---
+
+<a
+  class={className}
+  href={href}
+  hreflang={otherLocale}
+  lang={otherLocale}
+  title={tooltip}
+  aria-label={tooltip}
+  data-language-direct
+>
+  {variant === "menu" && <span>{targetName}</span>}
+  <strong>{targetCode}</strong>
+  {variant === "desktop" && <span>{targetName}</span>}
+</a>
+
+<script>
+  document.querySelectorAll<HTMLAnchorElement>("[data-language-direct]").forEach((link) => {
+    if (link.dataset.bound === "true") return;
+    link.dataset.bound = "true";
+    link.addEventListener("click", () => {
+      try { localStorage.setItem("rota-locale", link.hreflang || "en"); } catch {}
+    });
+  });
+</script>
+
+<style>
+  .rota-header__language strong,
+  .rota-menu-desktop__language strong,
+  .language-switcher__mobile-trigger strong { font: inherit; }
+
+  .language-switcher__mobile-trigger {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 12px 0;
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+  }
+</style>

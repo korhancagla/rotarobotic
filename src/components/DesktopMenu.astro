@@ -1,0 +1,50 @@
+---
+import Icon from "./Icon.astro";
+import LanguageSwitcher from "./LanguageSwitcher.astro";
+import type { Locale } from "../i18n/config";
+import { navigation } from "../i18n/navigation";
+import { alternatePath, routePath } from "../i18n/routes";
+
+interface Props { locale: Locale; languageHref?: string; }
+const { locale, languageHref = alternatePath(Astro.url.pathname, locale) } = Astro.props;
+const nav = navigation(locale);
+const en = locale === "en";
+const columns = [nav.company, nav.expertise, nav.technologies].map((column) => ({ ...column, items: column.items.map(([label, key]) => ({ label, href: routePath(key, locale) })) }));
+---
+
+<div class="rota-menu-desktop" aria-label={en ? "Desktop menu" : "Masaüstü menüsü"}>
+  <div class="rota-menu-desktop__grid">
+    {columns.map((column) => (
+      <section class="rota-menu-desktop__column">
+        <a class="rota-menu-desktop__title" href={column.href} title={en ? `Explore ${column.title}` : `${column.title} sayfasını inceleyin`}>{column.title}<i aria-hidden="true"></i></a>
+        <div class="rota-menu-desktop__links">
+          {column.items.map((item) => (
+            <a href={item.href} title={en ? `Explore ${item.label}` : `${item.label} sayfasını inceleyin`}><span aria-hidden="true">›</span>{item.label}</a>
+          ))}
+        </div>
+      </section>
+    ))}
+
+    <section class="rota-menu-desktop__column rota-menu-desktop__contact">
+      <a class="rota-menu-desktop__title" href={nav.contact.href}>{nav.contact.title}<i aria-hidden="true"></i></a>
+      <a class="rota-menu-desktop__form-link" href={nav.contact.href}><span aria-hidden="true">›</span>{en ? "Contact Form" : "İletişim Formu"}</a>
+      <div class="rota-menu-desktop__address">
+        <strong>ROTA ROBOTİK</strong>
+        <p>Yarış Çıkmazı Sokak No:1<br />{en ? "Independent Unit No:347" : "Bağımsız Bölüm No:347"}<br />İSTİM Tuzla / {en ? "Istanbul" : "İstanbul"}</p>
+        <a href="https://wa.me/905387788118" target="_blank" rel="noopener noreferrer" aria-label={en ? "Contact us on WhatsApp" : "WhatsApp üzerinden iletişime geçin"}><Icon name="whatsapp" />+90 538 778 81 18</a>
+        <a href="mailto:info@rotarobotik.com"><Icon name="envelope" />info@rotarobotik.com</a>
+      </div>
+    </section>
+  </div>
+
+  <div class="rota-menu-desktop__footer">
+    <p><i aria-hidden="true"></i>{en ? "ENGINEERING THE FUTURE" : "MÜHENDİSLİKLE GELECEĞİ TASARLIYORUZ"}</p>
+    <div class="rota-menu-desktop__footer-actions">
+      <div class="rota-menu-desktop__socials" aria-label={en ? "Social media" : "Sosyal medya"}>
+        <a href="https://www.linkedin.com/company/rota-robotik-sistemler/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><Icon name="linkedin" /></a>
+        <a href="https://wa.me/905387788118" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><Icon name="whatsapp" /></a>
+      </div>
+      <LanguageSwitcher locale={locale} href={languageHref} variant="desktop" />
+    </div>
+  </div>
+</div>

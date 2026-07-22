@@ -1,0 +1,23 @@
+{
+  "name": "Rota Robotik Sistemler",
+  "short_name": "Rota Robotik",
+  "description": "Endüstriyel robotik sistemler, otomasyon hatları ve mühendislik çözümleri.",
+  "lang": "tr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f7f9f8",
+  "theme_color": "#003b78",
+  "icons": [
+    {
+      "src": "/media/brand/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/media/brand/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

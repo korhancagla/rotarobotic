@@ -1,0 +1,236 @@
+---
+import LanguageSwitcher from "./LanguageSwitcher.astro";
+import type { Locale } from "../i18n/config";
+import { alternatePath, routePath } from "../i18n/routes";
+interface Props {
+  pageName: string;
+  locale: Locale;
+  menuId?: string;
+  languageHref?: string;
+}
+
+const { pageName, locale, menuId = "subpage-menu", languageHref = alternatePath(Astro.url.pathname, locale) } = Astro.props;
+---
+
+<header class="subpage-header" data-subpage-header>
+  <a class="subpage-header__brand" href={routePath("home", locale)} aria-label={locale === "en" ? "Rota Robotik homepage" : "Rota Robotik ana sayfa"} data-subpage-header-brand>
+    <img src={locale === "en" ? "/media/brand/logo-en.svg" : "/media/brand/logo.svg"} width="363" height="180" alt={locale === "en" ? "Rota Robotic Systems" : "Rota Robotik Sistemler"} />
+  </a>
+  <p class="subpage-header__page-name">{pageName}</p>
+  <div class="rota-header__actions subpage-header__actions" data-subpage-header-actions>
+    <LanguageSwitcher locale={locale} href={languageHref} />
+    <button class="rota-menu-button" type="button" aria-expanded="false" aria-controls={menuId} aria-label={locale === "en" ? "Open menu" : "Menüyü aç"} data-subpage-menu-button>
+      <span></span><span></span><span></span>
+      <svg class="rota-menu-button__logo" viewBox="0 0 504 714" fill="none" aria-hidden="true">
+        <path pathLength="1" d="M58 626V104L139 184" />
+        <path pathLength="1" d="M59 625L348 340" />
+        <path pathLength="1" d="M180 328L439 66" />
+        <path pathLength="1" d="M439 67V535L381 478" />
+      </svg>
+    </button>
+  </div>
+</header>
+
+<script>
+  const subpageHeader = document.querySelector<HTMLElement>("[data-subpage-header]");
+  const subpageHeaderBrand = subpageHeader?.querySelector<HTMLElement>("[data-subpage-header-brand]");
+  const subpageHeaderActions = subpageHeader?.querySelector<HTMLElement>("[data-subpage-header-actions]");
+
+  const setSubpageHeaderHoverZone = (zone?: "brand" | "actions") => {
+    if (!subpageHeader) return;
+    if (zone) subpageHeader.dataset.hoverZone = zone;
+    else delete subpageHeader.dataset.hoverZone;
+  };
+
+  subpageHeaderBrand?.addEventListener("pointerenter", () => setSubpageHeaderHoverZone("brand"));
+  subpageHeaderActions?.addEventListener("pointerenter", () => setSubpageHeaderHoverZone("actions"));
+  subpageHeader?.addEventListener("pointerleave", () => setSubpageHeaderHoverZone());
+  subpageHeaderBrand?.addEventListener("focus", () => setSubpageHeaderHoverZone("brand"));
+  subpageHeaderActions?.addEventListener("focusin", () => setSubpageHeaderHoverZone("actions"));
+  subpageHeader?.addEventListener("focusout", (event) => {
+    if (!subpageHeader.contains(event.relatedTarget as Node | null)) setSubpageHeaderHoverZone();
+  });
+</script>
+
+<style>
+  .subpage-header {
+    --header-action-size: var(--rota-control-size);
+    --header-blue-left: 30%;
+    --header-blue-width: 40%;
+    --header-green-edge: 50%;
+    --header-page-left: 50%;
+    --header-edge: clamp(16px, 2vw, 25px);
+    position: fixed;
+    z-index: 20;
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* 70 CSS px renders as roughly 140 px on the mobile reference display. */
+    height: 70px;
+    overflow: hidden;
+    border-bottom: 1px solid #000;
+    background:
+      radial-gradient(ellipse 42% 170% at 12% 50%, rgba(67,196,99,.22), transparent 72%),
+      radial-gradient(ellipse 32% 150% at 35% 50%, rgba(10,102,194,.38), transparent 74%),
+      linear-gradient(120deg, #101a2a, #172337);
+    background-position: 12% 50%, 35% 50%, 0 0;
+    background-size: 140% 220%, 160% 220%, 100% 100%;
+    box-shadow: 0 1px 0 rgba(10,102,194,.08), 0 10px 26px rgba(0,61,105,.16);
+    pointer-events: none;
+    animation:
+      subpage-bar-arrive .65s cubic-bezier(.22,.61,.36,1) both,
+      subpage-header-glow 2.8s cubic-bezier(.3,.08,.32,1) .25s 1 both;
+  }
+
+  .subpage-header::before,
+  .subpage-header::after {
+    position: absolute;
+    inset-block: 0;
+    content: "";
+    pointer-events: none;
+    transition: left .72s cubic-bezier(.34,1.45,.64,1), width .72s cubic-bezier(.34,1.45,.64,1), filter .72s ease;
+    will-change: left, width, transform;
+  }
+
+  .subpage-header::before {
+    z-index: 1;
+    right: 0;
+    width: var(--header-green-edge);
+    background:
+      radial-gradient(ellipse 40% 170% at 12% 50%, rgba(255,255,255,.24), transparent 72%),
+      linear-gradient(105deg, #00a96b, #43c463);
+    background-position: 12% 50%, 0 0;
+    background-size: 150% 220%, 100% 100%;
+    animation:
+      subpage-green-arrive .85s cubic-bezier(.16,1,.3,1) .38s both,
+      subpage-green-glow 2.45s cubic-bezier(.3,.08,.32,1) .48s 1 both;
+  }
+
+  .subpage-header::after {
+    z-index: 2;
+    left: var(--header-blue-left);
+    width: var(--header-blue-width);
+    border-radius: 999px;
+    background:
+      radial-gradient(ellipse 36% 170% at 20% 50%, rgba(123,225,194,.25), transparent 72%),
+      linear-gradient(105deg, #06418f, #0a66c2 48%, #07529f);
+    background-position: 20% 50%, 0 0;
+    background-size: 150% 220%, 100% 100%;
+    box-shadow: inset 0 0 22px rgba(0,35,97,.18), 0 5px 16px rgba(0,43,107,.14);
+    animation:
+      subpage-blue-arrive .9s cubic-bezier(.16,1,.3,1) .16s both,
+      subpage-blue-glow 2.65s cubic-bezier(.3,.08,.32,1) .32s 1 both;
+  }
+
+  .subpage-header__brand {
+    position: absolute;
+    z-index: 3;
+    top: 50%;
+    left: var(--header-edge);
+    display: block;
+    width: clamp(136px, 9.5vw, 154px);
+    pointer-events: auto;
+    transform: translateY(-50%);
+    animation: subpage-header-content .48s ease-out .42s both;
+    transition: transform .55s cubic-bezier(.34,1.45,.64,1);
+  }
+
+  .subpage-header__brand img { display: block; width: 100%; height: auto; filter: brightness(0) invert(1); }
+
+  .subpage-header__page-name {
+    position: absolute;
+    z-index: 3;
+    top: 50%;
+    left: var(--header-page-left);
+    max-width: 32vw;
+    margin: 0;
+    overflow: hidden;
+    color: #fff;
+    font-size: clamp(10px,.78vw,13px);
+    font-weight: 600;
+    letter-spacing: .16em;
+    line-height: 1;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 12px rgba(0,0,0,.24);
+    text-transform: uppercase;
+    white-space: nowrap;
+    pointer-events: none;
+    transform: translate(-50%,-50%);
+    animation: subpage-header-content .48s ease-out .48s both;
+    transition: left .72s cubic-bezier(.34,1.45,.64,1);
+  }
+
+  .subpage-header__actions {
+    z-index: 4;
+    top: 50%;
+    right: var(--header-edge);
+    pointer-events: auto;
+    transform: translateY(-50%);
+    animation: subpage-header-content .48s ease-out .5s both;
+  }
+
+  :global(body.rota-menu-is-open) .subpage-header__actions { transform: translateY(-50%); }
+  .subpage-header :global(.rota-header__language) { width: calc(var(--header-action-size) * .65); height: calc(var(--header-action-size) * .65); border-color: #fff; color: #fff; font-size: clamp(12px,.9vw,15px); }
+  :global(body.rota-menu-is-open) .subpage-header :global(.rota-header__language) { width: calc(var(--header-action-size) * .65); height: calc(var(--header-action-size) * .65); font-size: clamp(12px,.9vw,15px); }
+  .subpage-header :global(.rota-header__language:hover), .subpage-header :global(.rota-header__language:focus-visible) { background: #fff; color: var(--rota-blue); }
+  .subpage-header :global(.rota-menu-button span) { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.24); }
+  .subpage-header :global(.rota-menu-button:focus-visible span:nth-child(1)) { background: var(--rota-blue); }
+  .subpage-header :global(.rota-menu-button:focus-visible span:nth-child(2)) { background: var(--rota-teal); }
+  .subpage-header :global(.rota-menu-button:focus-visible span:nth-child(3)) { background: var(--rota-green); }
+
+  @media (hover: hover) and (pointer: fine) {
+    .subpage-header :global(.rota-menu-button:hover span:nth-child(1)) { background: var(--rota-blue); }
+    .subpage-header :global(.rota-menu-button:hover span:nth-child(2)) { background: var(--rota-teal); }
+    .subpage-header :global(.rota-menu-button:hover span:nth-child(3)) { background: var(--rota-green); }
+  }
+
+  .subpage-header[data-hover-zone="brand"] { --header-blue-left: 38%; --header-page-left: 58%; }
+  .subpage-header[data-hover-zone="actions"] { --header-blue-left: 22%; --header-page-left: 42%; }
+  .subpage-header[data-hover-zone="brand"]::after, .subpage-header[data-hover-zone="actions"]::before { filter: brightness(1.055); }
+
+  @media (hover: hover) and (pointer: fine) {
+    .subpage-header__brand:hover, .subpage-header__brand:focus-visible { transform: translateY(-50%) scale(1.045); }
+  }
+
+  @media (max-width: 640px) {
+    .subpage-header, .subpage-header[data-hover-zone] {
+      --header-action-size: 60px;
+      --header-blue-left: 33.333%;
+      --header-blue-width: 33.334%;
+      --header-green-edge: 50%;
+      --header-page-left: 50%;
+      --header-edge: 16px;
+    }
+    .subpage-header__brand { width: min(26vw,112px); }
+    .subpage-header__page-name { max-width: 31vw; font-size: 9px; letter-spacing: .11em; }
+    .subpage-header__actions { top: 50%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .subpage-header, .subpage-header::before, .subpage-header::after, .subpage-header__brand, .subpage-header__page-name, .subpage-header__actions { animation: none; transition: none; }
+  }
+
+  @keyframes subpage-bar-arrive { from { opacity: 0; transform: translateY(-100%); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes subpage-header-glow {
+    0% { background-position: 4% 38%, 18% 62%, 0 0; }
+    24% { background-position: 38% 68%, 56% 35%, 0 0; }
+    57% { background-position: 21% 42%, 75% 61%, 0 0; }
+    79% { background-position: 49% 57%, 31% 44%, 0 0; }
+    100% { background-position: 32% 50%, 48% 50%, 0 0; }
+  }
+  @keyframes subpage-green-arrive { from { opacity: 0; transform: translateX(115%); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes subpage-blue-arrive { from { opacity: 0; transform: translateX(-105%); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes subpage-green-glow {
+    0% { background-position: 6% 40%, 0 0; }
+    31% { background-position: 54% 65%, 0 0; }
+    63% { background-position: 24% 38%, 0 0; }
+    100% { background-position: 47% 50%, 0 0; }
+  }
+  @keyframes subpage-blue-glow {
+    0% { background-position: 14% 61%, 0 0; }
+    27% { background-position: 62% 37%, 0 0; }
+    71% { background-position: 31% 66%, 0 0; }
+    100% { background-position: 52% 50%, 0 0; }
+  }
+  @keyframes subpage-header-content { from { opacity: 0; } to { opacity: 1; } }
+</style>

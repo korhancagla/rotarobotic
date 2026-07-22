@@ -1,0 +1,944 @@
+---
+import Icon from "./Icon.astro";
+import DesktopMenu from "./DesktopMenu.astro";
+import LanguageSwitcher from "./LanguageSwitcher.astro";
+import { navigation } from "../i18n/navigation";
+import { alternatePath, routePath } from "../i18n/routes";
+import { localizeDeep } from "../i18n/translate";
+
+interface Props { locale: "tr" | "en" }
+const { locale } = Astro.props;
+const isTr = locale === "tr";
+const languageHref = alternatePath(Astro.url.pathname, locale);
+const currentYear = new Date().getFullYear();
+const nav = navigation(locale);
+const mainMenuItems = [
+  { label: nav.company.title, panel: "corporate" },
+  { label: nav.expertise.title, panel: "expertise" },
+  { label: nav.technologies.title, panel: "technologies" },
+  { label: nav.references.title, href: nav.references.href },
+  { label: nav.contact.title, href: nav.contact.href },
+];
+const submenuGroups = [nav.company, nav.expertise, nav.technologies].map((group, index) => ({
+  ...group,
+  panel: ["corporate", "expertise", "technologies"][index],
+  items: group.items.map(([label, key]) => ({ label, href: routePath(key, locale) })),
+}));
+
+const landingSections = isTr
+  ? [
+      { number: "02", id: "corporate", label: "Kurumsal Tanıtım", title: "Mühendisliği üretime dönüştüren entegrasyon gücü.", body: "Rota Robotik’in yaklaşımını, vizyonunu ve kalite anlayışını anlatacak kurumsal içerik alanı." },
+      { number: "03", id: "technologies", label: "Teknolojiler", title: "Üretim için doğru teknoloji, tek bir sistemde.", body: "Kaynak, taşıma, montaj ve dozajlama teknolojileri bu bölümde sunulacak." },
+      { number: "04", id: "expertise", label: "Uzmanlık Alanlarımız", title: "Tasarımdan devreye almaya uçtan uca mühendislik.", body: "Simülasyon, mekanik tasarım, elektrik, otomasyon ve robot yazılımı uzmanlıkları için ayrılan alan." },
+      { number: "05", id: "references", label: "Referanslar", title: "Sahada çalışan, sonuç üreten projeler.", body: "Seçili projeler, uygulama türleri ve referans görselleri için tasarlanan bölüm." },
+      { number: "06", id: "contact", label: "İletişim", title: "Birlikte Tasarlayalım", body: "Projenizi konuşmak ve doğru mühendislik ekibiyle buluşmak için iletişime geçin.", cta: true },
+    ]
+  : [
+      { number: "02", id: "corporate", label: "Corporate Introduction", title: "Integration expertise that turns engineering into production.", body: "A dedicated area for Rota Robotic’s approach, vision and quality culture." },
+      { number: "03", id: "technologies", label: "Technologies", title: "The right production technology in one integrated system.", body: "Welding, handling, assembly and dosing technologies will be presented here." },
+      { number: "04", id: "expertise", label: "Our Expertise", title: "End-to-end engineering from design to commissioning.", body: "A section for simulation, mechanical design, electrical engineering, automation and robot software." },
+      { number: "05", id: "references", label: "References", title: "Field-proven projects that deliver results.", body: "Selected projects and trusted partnerships across production industries." },
+      { number: "06", id: "contact", label: "Contact", title: "Let’s Design Together", body: "Talk to our engineering team about your next production project.", cta: true },
+    ];
+
+const aboutContent = {
+  label: "Hakkımızda",
+  title: "Akıllı Mühendislik",
+  paragraphs: [
+    "Rota Robotik Sistemler, 2023 yılında İstanbul’da robot entegratörü olarak kuruldu. 20 yıllık deneyime sahip mühendislik ekibimizle, robotik sistemlerin tasarımından devreye alınmasına kadar tüm süreci yönetiyor; endüstriyel robot ve kontrol sistemleri entegrasyonuyla üretimi daha verimli hâle getiriyoruz.",
+    "Kullanımı kolay, verimli ve güvenilir sistemler geliştiriyor; güçlü robotik entegrasyon, modern teknolojiler ve doğru ihtiyaç analiziyle müşterilerimize sürdürülebilir çözümler sunuyoruz. Kaliteli mühendisliğin fark yarattığına inanıyoruz.",
+  ],
+  facts: ["Deneyim", "Hassas teslimat", "Yenilikçi çözümler", "Maliyet etkin"],
+  videoLabel: "Kurumsal tanıtım videosunu oynat",
+  videoCaption: "Kurumsal Tanıtım Filmi",
+  closeLabel: "Videoyu kapat",
+};
+
+const expertiseContent = {
+  label: "Uzmanlıklar",
+  title: "Fikirden üretime. Uçtan uca mühendislik.",
+  body: "Tasarım, yazılım, imalat ve devreye alma süreçlerini tek çatı altında yöneterek, robotik sistemlerin her aşamasında mühendislik gücümüzü ortaya koyuyoruz.",
+  cta: "Tüm Uzmanlıklarımız",
+};
+
+const technologyContent = {
+  label: "Teknolojiler",
+  title: "Üretimi dönüştüren robotik sistemler.",
+  body: "Farklı üretim ihtiyaçlarına yönelik robotik, otomasyon ve ileri üretim teknolojileri geliştiriyor; verimlilik, kalite ve esneklik sağlıyoruz.",
+  cta: "Tüm Teknolojilerimiz",
+  items: [
+    { title: "Punta Kaynak", description: "Yüksek tekrarlanabilirlik ve hassas proses kontrolü.", image: "/media/technologies/welding/legacy-spot-welding.webp", href: "/teknolojiler/kaynak-teknolojileri/" },
+    { title: "Gazaltı Kaynak", description: "Esnek, güvenilir ve otomasyona hazır kaynak çözümleri.", image: "/media/technologies/welding/legacy-arc-welding.webp", href: "/teknolojiler/kaynak-teknolojileri/" },
+    { title: "Robotik Taşıma", description: "Üretim akışını hızlandıran akıllı taşıma sistemleri.", image: "/media/technologies/material-handling/cover.webp", href: "/teknolojiler/tasima-sistemleri/" },
+    { title: "Paletleme", description: "Yüksek kapasiteli ve güvenli robotik paletleme.", image: "/media/technologies/material-handling/palletizing.webp", href: "/teknolojiler/tasima-sistemleri/" },
+    { title: "Konveyör Sistemleri", description: "Hatlar arasında kesintisiz ve kontrollü ürün transferi.", image: "/media/technologies/material-handling/cover.webp", href: "/teknolojiler/tasima-sistemleri/" },
+    { title: "Montaj Sistemleri", description: "Hassas montaj süreçleri için entegre otomasyon.", image: "/media/technologies/assembly/legacy-cover.webp", href: "/teknolojiler/montaj-sistemleri/" },
+    { title: "Mastikleme & Dozajlama", description: "Kontrollü uygulama ve kararlı proses kalitesi.", image: "/media/technologies/dispensing/cover.webp", href: "/teknolojiler/mastikleme-dozajlama-sistemleri/" },
+  ],
+};
+
+const referencesContent = {
+  label: "Referanslarımız",
+  title: "Güvenle büyüyen iş birlikleri.",
+  projects: [
+    "Otomotiv Projeleri",
+    "Beyaz Eşya Projeleri",
+    "Robotik Kaynak Hücreleri",
+    "Montaj Hatları",
+    "Taşıma ve Konveyör Sistemleri",
+  ],
+  logos: [
+    { name: "Arçelik", file: "arcelik.webp", width: 1389, height: 594 },
+    { name: "Beko", file: "beko.webp", width: 1024, height: 556 },
+    { name: "Ford Otosan", file: "ford-otosan.webp", width: 914, height: 564 },
+    { name: "Renault", file: "renault.webp", width: 919, height: 320 },
+    { name: "Stellantis", file: "stellantis.webp", width: 1280, height: 272 },
+    { name: "Tofaş", file: "tofas.webp", width: 2588, height: 1092 },
+    { name: "Koç Holding", file: "koc-holding.webp", width: 1240, height: 620 },
+    { name: "Coşkunöz Holding", file: "coskunoz.webp", width: 1402, height: 472 },
+  ],
+};
+
+const localizedAboutContent = localizeDeep(aboutContent, locale);
+const localizedExpertiseContent = localizeDeep(expertiseContent, locale);
+const localizedTechnologyContent = localizeDeep(technologyContent, locale);
+const localizedReferencesContent = localizeDeep(referencesContent, locale);
+---
+
+<div class="rota-site rota-site--intro-pending">
+  <header class="rota-header">
+    <a class="rota-header__brand" href={routePath("home", locale)} data-scroll-home aria-label={isTr ? "Rota Robotik ana sayfa" : "Rota Robotic home"}>
+      <svg class="rota-header__brand-pen" viewBox="0 0 512 512" fill="none" aria-hidden="true">
+        <path pathLength="1" d="M100 479V91L157 148" />
+        <path pathLength="1" d="M100 479L316 263" />
+        <path pathLength="1" d="M191 247L411 34" />
+        <path pathLength="1" d="M411 34V433L352 375" />
+      </svg>
+      <img class="rota-header__brand-svg rota-header__brand-mark" src={isTr ? "/media/brand/logo.svg" : "/media/brand/logo-en.svg"} width="363" height="180" alt={isTr ? "Rota Robotik Sistemler logosu" : "Rota Robotic Systems logo"} fetchpriority="high" />
+      <span class="rota-header__brand-word-clip" aria-hidden="true">
+        <img class="rota-header__brand-svg rota-header__brand-word" src={isTr ? "/media/brand/logo.svg" : "/media/brand/logo-en.svg"} width="363" height="180" alt={isTr ? "Rota Robotik Sistemler" : "Rota Robotic Systems"} fetchpriority="high" />
+      </span>
+    </a>
+    <div class="rota-header__actions">
+      <LanguageSwitcher locale={locale} href={languageHref} />
+      <button class="rota-menu-button" type="button" aria-expanded="false" aria-controls="rota-menu" aria-label={isTr ? "Menüyü aç" : "Open menu"}>
+        <span></span><span></span><span></span>
+        <svg class="rota-menu-button__logo" viewBox="0 0 504 714" fill="none" aria-hidden="true">
+          <path pathLength="1" d="M58 626V104L139 184" />
+          <path pathLength="1" d="M59 625L348 340" />
+          <path pathLength="1" d="M180 328L439 66" />
+          <path pathLength="1" d="M439 67V535L381 478" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <nav class="rota-menu" id="rota-menu" data-open="false" data-level="root" aria-label={isTr ? "Ana menü" : "Main menu"} aria-hidden="true" hidden>
+    <DesktopMenu locale={locale} languageHref={languageHref} />
+    <div class="rota-menu__stage">
+      <div class="rota-menu__panel rota-menu__panel--main" data-menu-panel="main" data-active="true" aria-hidden="false">
+        <div class="rota-menu__mobile-language"><LanguageSwitcher locale={locale} href={languageHref} variant="menu" /></div>
+        <div class="rota-menu__main-links">
+          {mainMenuItems.map((item) => item.panel ? (
+            <button type="button" data-menu-target={item.panel} aria-controls={`rota-menu-panel-${item.panel}`}>
+              <span>{item.label}</span><i class="rota-menu__chevron rota-menu__chevron--down" aria-hidden="true"></i>
+            </button>
+          ) : (
+            <a href={item.href} title={isTr ? `${item.label} sayfasını açın` : `Open ${item.label}`}><span>{item.label}</span><i class="rota-menu__chevron rota-menu__chevron--next" aria-hidden="true"></i></a>
+          ))}
+        </div>
+      </div>
+
+      {submenuGroups.map((group) => (
+        <div class="rota-menu__panel rota-menu__panel--sub" id={`rota-menu-panel-${group.panel}`} data-menu-panel={group.panel} data-active="false" aria-hidden="true">
+          <button class="rota-menu__back" type="button" data-menu-back>
+            <i class="rota-menu__chevron rota-menu__chevron--back" aria-hidden="true"></i>{isTr ? "Geri" : "Back"}
+          </button>
+          <p class="rota-menu__panel-title">{group.title}</p>
+          <div class="rota-menu__sub-links">
+            {group.items.map((item) => (
+              <a href={item.href} title={isTr ? `${item.label} sayfasını inceleyin` : `Explore ${item.label}`}>{item.label}</a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+    <p class="rota-menu__copyright">{isTr ? "Tüm hakları saklıdır" : "All rights reserved"} © {currentYear} Rota Robotik</p>
+    <div class="rota-menu__social-rail" aria-label={isTr ? "Sosyal medya" : "Social media"}>
+      <div class="rota-menu__socials">
+        <a href="https://www.linkedin.com/company/rota-robotik-sistemler/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><Icon name="linkedin" /></a>
+        <a href="https://wa.me/905387788118" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><Icon name="whatsapp" /></a>
+      </div>
+    </div>
+  </nav>
+
+  <aside class="rota-scroll-map" aria-hidden="true">
+    <ol class="rota-scroll-map__steps">
+      {Array.from({ length: landingSections.length + 1 }, (_, index) => (
+        <li><i class="rota-scroll-map__dot" data-scroll-dot data-active={index === 0 ? "true" : "false"}></i></li>
+      ))}
+    </ol>
+  </aside>
+
+  <main class="rota-page">
+    <section class="rota-home rota-home--video-loading" id="hero" data-snap-section>
+      <video class="rota-home__video" muted autoplay playsinline preload="metadata" poster="/media/home/hero-poster.webp" data-loop-start="3.4333" data-loop-end="16" aria-hidden="true">
+        {!isTr && <source src="/media/home/hero-background-en-hevc.mp4" type='video/mp4; codecs="hvc1"' />}
+        <source src={isTr ? "/media/home/hero-background.mp4" : "/media/home/hero-background-en-h264-720p.mp4"} type="video/mp4" />
+      </video>
+      <div class="rota-home__wash" aria-hidden="true"></div>
+      <div id="rota-particles" class="rota-particle-field" data-intro-particles aria-hidden="true"></div>
+      <div class="rota-home__tagline-wrap">
+        <p class="rota-home__tagline" aria-label={isTr ? "GELECEĞİN ÜRETİMİNİ TASARLAMAK" : "ENGINEERING THE FUTURE OF MANUFACTURING"} data-hero-tagline data-typing-state="waiting">
+          <span class="rota-home__tagline-first"><span data-tagline-first></span><i class="rota-home__typing-caret" aria-hidden="true"></i></span><span class="rota-home__tagline-second"><span data-tagline-second></span></span>
+        </p>
+        <a class="rota-home__scroll-cue" href="#corporate" title={isTr ? "Kurumsal bölüme ilerle" : "Continue to the corporate section"} aria-label={isTr ? "Aşağı kaydır" : "Scroll down"}><img src="/media/ui/arrow-down.webp" width="102" height="66" alt={isTr ? "Aşağı yön oku" : "Down arrow"} /></a>
+      </div>
+      <h1 class="rota-home__title">Rota Robotik Sistemler</h1>
+    </section>
+
+    {landingSections.map((section, index) => (
+      <section class={`rota-section rota-section--${index + 2} rota-section--${section.id}${section.id === "corporate" ? " rota-section--about" : ""}`} id={section.id} data-snap-section>
+        {section.id === "corporate" ? (
+          <div class="rota-about">
+            <div class="rota-about__copy" data-scroll-motion="left">
+              <p class="rota-about__label">{localizedAboutContent.label}</p>
+              <h2>{localizedAboutContent.title}</h2>
+              <div class="rota-about__text">
+                {localizedAboutContent.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+              </div>
+              <div class="rota-about__facts" aria-label={isTr ? "Öne çıkan özellikler" : "Highlights"}>
+                {localizedAboutContent.facts.map((fact) => <span>{fact}</span>)}
+              </div>
+            </div>
+            <button class="rota-about__media" type="button" data-about-image-open data-scroll-motion="right" aria-label={isTr ? "Hakkımızda görselini büyüt" : "Enlarge the About Us image"}>
+              <img src="/media/corporate/about-home-cover.webp" alt={isTr ? "Rota Robotik üretim sahası" : "Rota Robotic production facility"} width="1602" height="1191" loading="lazy" decoding="async" />
+            </button>
+          </div>
+        ) : section.id === "expertise" ? (
+          <div class="rota-expertise">
+            <div class="rota-expertise__copy" data-scroll-motion="left">
+              <p class="rota-expertise__label">{localizedExpertiseContent.label}</p>
+              <h2>{localizedExpertiseContent.title}</h2>
+              <p class="rota-expertise__description">{localizedExpertiseContent.body}</p>
+            </div>
+            <button class="rota-expertise__media" type="button" data-expertise-image-open data-scroll-motion="right" aria-label={isTr ? "Uzmanlıklar görselini büyüt" : "Enlarge the expertise image"}>
+              <img src="/media/corporate/about-cover.webp" alt={isTr ? "Robotik üretim hattı" : "Robotic production line"} width="1254" height="1254" loading="lazy" decoding="async" />
+              <i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i>
+            </button>
+            <a class="rota-section__detail-link rota-section__detail-link--expertise" href={routePath("expertise", locale)} title={isTr ? "Tüm uzmanlık alanlarımızı inceleyin" : "Explore all our areas of expertise"}>
+              <span>{localizedExpertiseContent.cta}</span><i aria-hidden="true"></i>
+            </a>
+          </div>
+        ) : section.id === "technologies" ? (
+          <div class="rota-technologies">
+            <div class="rota-technologies__copy" data-scroll-motion="up">
+              <p class="rota-technologies__label">{localizedTechnologyContent.label}</p>
+              <h2>{localizedTechnologyContent.title}</h2>
+              <p class="rota-technologies__description">{localizedTechnologyContent.body}</p>
+            </div>
+            <div class="rota-technologies__marquee" data-technology-marquee data-scroll-motion="right" aria-label={isTr ? "Rota Robotik teknolojileri. Fareyle sağa veya sola sürükleyebilirsiniz." : "Rota Robotic technologies. Drag left or right to browse."}>
+              <div class="rota-technologies__track">
+                {[0, 1].map((groupIndex) => (
+                  <div class="rota-technologies__group" aria-hidden={groupIndex === 1 ? "true" : undefined}>
+                    {localizedTechnologyContent.items.map((item) => (
+                      <a class="rota-technology-card" href={item.href} title={`${item.title}: ${item.description}`} aria-label={isTr ? `${item.title} teknolojisini incele` : `Explore ${item.title}`} tabindex={groupIndex === 1 ? -1 : undefined}>
+                        <span class="rota-technology-card__image"><img src={item.image} alt={isTr ? `${item.title} robotik sistem uygulaması` : `${item.title} robotic system application`} width="720" height="480" loading="lazy" decoding="async" /></span>
+                        <span class="rota-technology-card__copy">
+                          <strong>{item.title}</strong>
+                          <small>{item.description}</small>
+                        </span>
+                      </a>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <a class="rota-section__detail-link rota-section__detail-link--technology" href={routePath("technologies", locale)} title={isTr ? "Tüm robotik üretim teknolojilerimizi inceleyin" : "Explore all our robotic production technologies"}>
+              <span>{localizedTechnologyContent.cta}</span><i aria-hidden="true"></i>
+            </a>
+          </div>
+        ) : section.id === "references" ? (
+          <div class="rota-references">
+            <div class="rota-references__heading" data-scroll-motion="left">
+              <p class="rota-references__label">{localizedReferencesContent.label}</p>
+              <h2>{localizedReferencesContent.title}</h2>
+              <ul class="rota-references__projects">
+                {localizedReferencesContent.projects.map((project) => <li>{project}</li>)}
+              </ul>
+              <a class="rota-section__detail-link rota-section__detail-link--references" href={routePath("references", locale)} title={isTr ? "Tüm referanslarımızı inceleyin" : "Explore all our references"}>
+                <span>{isTr ? "Tüm Referanslarımız" : "View All References"}</span><i aria-hidden="true"></i>
+              </a>
+            </div>
+            <div class="rota-references__logos" data-scroll-motion="right" aria-label={isTr ? "Rota Robotik referans logoları" : "Rota Robotic reference logos"}>
+              {localizedReferencesContent.logos.map((logo) => (
+                <a class="rota-reference-logo" href={routePath("references", locale)} title={`${logo.name} ${isTr ? "referansını inceleyin" : "reference"}`} aria-label={isTr ? `${logo.name} referansını incele` : `View the ${logo.name} reference`}>
+                  <img src={`/media/references/${logo.file}`} width={logo.width} height={logo.height} alt={`${logo.name} ${isTr ? "logosu" : "logo"}`} loading="lazy" decoding="async" />
+                  <strong>{logo.name}</strong>
+                </a>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div class="rota-section__inner">
+            <div class="rota-section__copy" data-scroll-motion="right">
+              {section.id !== "contact" && <p class="rota-section__number"><span>{section.number}</span> / 08</p>}
+              <p class="rota-section__label">{section.label}</p>
+              <h2>{section.title}</h2>
+              <p class="rota-section__description">{section.body}</p>
+              {section.id === "contact" && (
+                <form id="contact-form" class="rota-contact-form" method="post" data-emailjs-form>
+                  <input type="hidden" name="language" value={locale} />
+                  <label class="rota-contact-form__trap" aria-hidden="true">
+                    <span>{isTr ? "Web sitesi" : "Website"}</span>
+                    <input type="text" name="website" tabindex="-1" autocomplete="off" />
+                  </label>
+                  <div class="rota-contact-form__row">
+                    <label>
+                      <span>{isTr ? "Adınız" : "Name"}</span>
+                      <input type="text" name="name" minlength="2" maxlength="80" autocomplete="name" required />
+                    </label>
+                    <label>
+                      <span>{isTr ? "Telefonunuz" : "Phone"}</span>
+                      <input type="tel" name="phone" minlength="7" maxlength="24" autocomplete="tel" required />
+                    </label>
+                  </div>
+                  <label>
+                    <span>{isTr ? "E-posta adresiniz" : "Email Address"}</span>
+                    <input type="email" name="email" maxlength="120" autocomplete="email" required />
+                  </label>
+                  <label>
+                    <span>{isTr ? "Mesajınız" : "Message"}</span>
+                    <textarea name="message" rows="3" minlength="10" maxlength="1200" required></textarea>
+                  </label>
+                  <div class="rota-contact-form__actions">
+                    <button type="submit"><span>{isTr ? "Gönder" : "Send Message"}</span><i aria-hidden="true"></i></button>
+                    <p data-contact-status aria-live="polite" role="status"></p>
+                  </div>
+                </form>
+              )}
+            </div>
+            <div class={`rota-section__visual${section.id === "contact" ? " rota-section__visual--map" : ""}`} data-scroll-motion="left" aria-hidden={section.id === "contact" ? undefined : "true"}>
+              {section.id === "contact" ? (
+                <div class="rota-contact-map" data-contact-map aria-label={isTr ? "Rota Robotik konumu" : "Rota Robotic location"}></div>
+              ) : (
+                <>
+                  <span>{section.number}</span>
+                  <i></i><i></i><i></i>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+      </section>
+    ))}
+
+    <section class="rota-certification-trust" aria-labelledby="trust-certificates-title">
+      <div class="rota-certification-trust__content" data-scroll-motion="up">
+        <p>{isTr ? "Uluslararası Standartlarda Üretim" : "Manufacturing to International Standards"}</p>
+        <strong id="trust-certificates-title">ISO 9001:2015 <i aria-hidden="true">·</i> ISO 14001:2015</strong>
+      </div>
+      <a class="rota-certification-trust__link" href={routePath("certificates", locale)} title={isTr ? "Rota Robotik sertifikalarını inceleyin" : "Explore Rota Robotic certificates"} data-scroll-motion="up"><span>{isTr ? "Tüm Sertifikaları İncele" : "View All Certificates"}</span><i aria-hidden="true">→</i></a>
+    </section>
+
+    <footer class="rota-footer" id="footer" data-snap-section>
+      <div class="rota-footer__glow" aria-hidden="true"></div>
+      <div class="rota-footer__main" data-scroll-motion="up">
+        <div class="rota-footer__intro">
+          <a class="rota-footer__logo" href="#hero" aria-label={isTr ? "Rota Robotik ana sayfa" : "Rota Robotic home"}>
+            <img src={isTr ? "/media/brand/logo.svg" : "/media/brand/logo-en.svg"} width="363" height="180" alt={isTr ? "Rota Robotik Sistemler" : "Rota Robotic Systems"} loading="lazy" />
+          </a>
+          <p>{isTr ? "Geleceğin üretimini; akıllı, güvenilir ve sürdürülebilir robotik sistemlerle birlikte tasarlıyor, fikirden devreye almaya kadar her aşamada mühendislik gücümüzü üretime taşıyoruz." : "We engineer the future of manufacturing with intelligent, reliable and sustainable robotic systems, bringing our expertise to every stage from concept to commissioning."}</p>
+          <div class="rota-footer__socials" aria-label={isTr ? "Sosyal medya bağlantıları" : "Social media links"}>
+            <a href="https://www.linkedin.com/company/rota-robotik-sistemler/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><Icon name="linkedin" /></a>
+            <a href="https://wa.me/905387788118" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><Icon name="whatsapp" /></a>
+          </div>
+        </div>
+
+        <nav class="rota-footer__links" aria-label={isTr ? "Alt bilgi menüsü" : "Footer menu"}>
+          {[nav.company, nav.expertise, nav.technologies].map((group) => (
+            <div class="rota-footer__group">
+              <h3>{group.title}</h3>
+              {group.items.map(([label, key]) => <a href={routePath(key, locale)}>{label}</a>)}
+              <a href={group.href}>{isTr ? `Tüm ${group.title}` : `View All ${group.title}`}</a>
+            </div>
+          ))}
+        </nav>
+
+        <div class="rota-footer__contact">
+          <h3>{isTr ? "Bize Ulaşın" : "Contact Us"}</h3>
+          <a href="mailto:info@rotarobotik.com"><Icon name="envelope" /><span>info@rotarobotik.com</span></a>
+          <a href="https://wa.me/905387788118" target="_blank" rel="noopener noreferrer" aria-label={isTr ? "WhatsApp üzerinden iletişime geçin" : "Contact us on WhatsApp"}><Icon name="whatsapp" /><span>+90 538 778 81 18</span></a>
+          <p><Icon name="location" /><span>Yarış Çıkmazı Sokak No:1<br />{isTr ? "Bağımsız Bölüm No:347" : "Independent Unit No:347"}<br />İSTİM Tuzla / {isTr ? "İstanbul" : "Istanbul"}</span></p>
+        </div>
+      </div>
+
+      <div class="rota-footer__bottom">
+        <p>{isTr ? "Tüm hakları saklıdır" : "All rights reserved"} © {currentYear} Rota Robotik</p>
+        <div>
+          <a href="#footer">{isTr ? "KVKK" : "Data Protection"}</a>
+          <a href="#footer">{isTr ? "Gizlilik Politikası" : "Privacy Policy"}</a>
+          <a class="rota-footer__top" href="#hero">{isTr ? "Yukarı dön" : "Back to Top"} <span aria-hidden="true">↑</span></a>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <dialog class="rota-image-modal" data-about-image-dialog aria-label={isTr ? "Hakkımızda görseli" : "About Us image"}>
+    <button class="rota-image-modal__close" type="button" data-about-image-close aria-label={isTr ? "Görseli kapat" : "Close image"}>×</button>
+    <img src="/media/corporate/about-home-cover.webp" width="1602" height="1191" alt={isTr ? "Rota Robotik üretim sahası" : "Rota Robotic production facility"} data-image-modal-content />
+  </dialog>
+</div>
+
+<script is:inline src="/vendor/particles.js"></script>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>(".rota-menu-button");
+  const header = document.querySelector<HTMLElement>(".rota-header");
+  const menu = document.querySelector<HTMLElement>(".rota-menu");
+  const menuPanels = Array.from(document.querySelectorAll<HTMLElement>("[data-menu-panel]"));
+  const menuTargets = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-menu-target]"));
+  const menuBackButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-menu-back]"));
+  const aboutImageOpen = document.querySelector<HTMLButtonElement>("[data-about-image-open]");
+  const expertiseImageOpen = document.querySelector<HTMLButtonElement>("[data-expertise-image-open]");
+  const aboutImageDialog = document.querySelector<HTMLDialogElement>("[data-about-image-dialog]");
+  const aboutImageClose = document.querySelector<HTMLButtonElement>("[data-about-image-close]");
+  const imageModalContent = document.querySelector<HTMLImageElement>("[data-image-modal-content]");
+  const home = document.querySelector<HTMLElement>(".rota-home");
+  const heroTagline = document.querySelector<HTMLElement>("[data-hero-tagline]");
+  const particleField = document.querySelector<HTMLElement>("[data-intro-particles]");
+  const taglineFirst = document.querySelector<HTMLElement>("[data-tagline-first]");
+  const taglineSecond = document.querySelector<HTMLElement>("[data-tagline-second]");
+  const taglineCaret = document.querySelector<HTMLElement>(".rota-home__typing-caret");
+  const video = document.querySelector<HTMLVideoElement>(".rota-home__video");
+  const brand = document.querySelector<HTMLElement>(".rota-header__brand");
+  const homeBrandLink = document.querySelector<HTMLAnchorElement>("[data-scroll-home]");
+  const logoWord = document.querySelector<HTMLElement>(".rota-header__brand-word");
+  // 00:00:03:13 at 30 fps = 3.4333 seconds; the loop ends at 00:00:16:00.
+  const loopStart = Number(video?.dataset.loopStart ?? 3.4333);
+  const loopEnd = Number(video?.dataset.loopEnd ?? 16);
+  const snapSections = Array.from(document.querySelectorAll<HTMLElement>("[data-snap-section]"));
+  const scrollDots = Array.from(document.querySelectorAll<HTMLElement>("[data-scroll-dot]"));
+  const technologyMarquee = document.querySelector<HTMLElement>("[data-technology-marquee]");
+  const technologyFirstGroup = technologyMarquee?.querySelector<HTMLElement>(".rota-technologies__group");
+  const contactStatus = document.querySelector<HTMLElement>("[data-contact-status]");
+  const contactMapElement = document.querySelector<HTMLElement>("[data-contact-map]");
+  const site = document.querySelector<HTMLElement>(".rota-site");
+  const scrollMotionItems = Array.from(document.querySelectorAll<HTMLElement>("[data-scroll-motion]"));
+  const reducePageMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const useNativeMobileScroll = window.matchMedia("(max-width: 900px), (hover: none) and (pointer: coarse)").matches;
+  const pageIsTurkish = document.documentElement.lang === "tr";
+  let videoStarted = false;
+
+  const particlesJS = (window as typeof window & { particlesJS?: (id: string, options: Record<string, unknown>) => void }).particlesJS;
+  if (particleField && particlesJS && !reducePageMotion) {
+    try {
+      particlesJS("rota-particles", {
+      particles: {
+        number: { value: 82, density: { enable: true, value_area: 1050 } },
+        color: { value: ["#0a66c2", "#00a896", "#43c463"] },
+        shape: {
+          type: "circle",
+          stroke: { width: 0, color: "#000000" },
+          polygon: { nb_sides: 5 },
+          image: { src: "", width: 100, height: 100 },
+        },
+        opacity: { value: .78, random: false, anim: { enable: false, speed: 1, opacity_min: .1, sync: false } },
+        size: { value: 3, random: true, anim: { enable: false, speed: 40, size_min: .1, sync: false } },
+        line_linked: { enable: true, distance: 158, color: "#00a896", opacity: .64, width: 1 },
+        move: {
+          enable: true,
+          speed: 1.55,
+          direction: "none",
+          random: false,
+          straight: false,
+          out_mode: "out",
+          bounce: false,
+          attract: { enable: false, rotateX: 600, rotateY: 1200 },
+        },
+      },
+      interactivity: {
+        detect_on: "canvas",
+        events: {
+          onhover: { enable: false, mode: "repulse" },
+          onclick: { enable: false, mode: "push" },
+          resize: true,
+        },
+        modes: {
+          grab: { distance: 400, line_linked: { opacity: 1 } },
+          bubble: { distance: 400, size: 40, duration: 2, opacity: .8, speed: 3 },
+          repulse: { distance: 200, duration: .4 },
+          push: { particles_nb: 4 },
+          remove: { particles_nb: 2 },
+        },
+      },
+      retina_detect: true,
+      });
+    } catch {
+      particleField.remove();
+    }
+  }
+
+  // İlk boyamada stil yüklenmeden masaüstü menüsünün görünmesini engeller.
+  if (menu) menu.hidden = false;
+
+  const scrollToHomeTop = () => {
+    window.scrollTo({ top: 0, behavior: reducePageMotion ? "auto" : "smooth" });
+  };
+
+  homeBrandLink?.addEventListener("click", (event) => {
+    const destination = new URL(homeBrandLink.href);
+    const isCurrentHome = destination.pathname.replace(/\/$/, "") === window.location.pathname.replace(/\/$/, "");
+
+    if (!isCurrentHome) return;
+
+    event.preventDefault();
+    scrollToHomeTop();
+  });
+
+  if (reducePageMotion) {
+    site?.classList.remove("rota-site--intro-pending");
+    site?.classList.add("rota-site--intro-logo", "rota-site--intro-tagline", "rota-site--intro-controls", "rota-site--intro-beams", "rota-site--intro-complete");
+  } else {
+    window.requestAnimationFrame(() => {
+      window.setTimeout(() => {
+        site?.classList.remove("rota-site--intro-pending");
+        site?.classList.add("rota-site--intro-logo");
+      }, 140);
+      window.setTimeout(() => site?.classList.add("rota-site--intro-tagline"), 700);
+    });
+  }
+
+  const initializeContactMap = async () => {
+    if (!contactMapElement || contactMapElement.dataset.ready) return;
+    contactMapElement.dataset.ready = "loading";
+
+    try {
+      // Harita kodunu ana sayfa açılışından ayır: Leaflet yüklenemese bile
+      // video, menü ve plexus animasyonu çalışmaya devam etsin.
+      const L = await import("leaflet/dist/leaflet-src.esm.js");
+      const rotaLocation: [number, number] = [40.8234, 29.3488];
+      const contactMap = L.map(contactMapElement, {
+        attributionControl: true,
+        zoomControl: false,
+        scrollWheelZoom: false,
+        zoomSnap: .25,
+      }).setView(rotaLocation, 12.25);
+      contactMap.attributionControl.setPrefix(false);
+
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+        attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
+        maxZoom: 20,
+        subdomains: "abcd",
+      }).addTo(contactMap);
+
+      L.control.zoom({
+        position: "bottomleft",
+        zoomInTitle: pageIsTurkish ? "Yakınlaştır" : "Zoom in",
+        zoomOutTitle: pageIsTurkish ? "Uzaklaştır" : "Zoom out",
+      }).addTo(contactMap);
+
+      const rotaMarker = L.divIcon({
+        className: "rota-leaflet-marker",
+        html: '<span class="rota-contact-map__pin" aria-hidden="true"><b>R</b></span>',
+        iconSize: [68, 68],
+        iconAnchor: [34, 59],
+      });
+      L.marker(rotaLocation, { icon: rotaMarker, interactive: false }).addTo(contactMap);
+      contactMapElement.dataset.ready = "true";
+      window.requestAnimationFrame(() => contactMap.invalidateSize());
+    } catch {
+      delete contactMapElement.dataset.ready;
+    }
+  };
+
+  if (contactMapElement) {
+    if ("IntersectionObserver" in window) {
+      const mapObserver = new IntersectionObserver((entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        mapObserver.disconnect();
+        void initializeContactMap();
+      }, { rootMargin: "320px" });
+      mapObserver.observe(contactMapElement);
+    } else {
+      void initializeContactMap();
+    }
+  }
+
+  const firstTaglineText = pageIsTurkish ? "GELECEĞİN ÜRETİMİNİ" : "ENGINEERING THE FUTURE";
+  const secondTaglineText = pageIsTurkish ? "TASARLAMAK" : "OF MANUFACTURING";
+
+  if (contactStatus) {
+    const currentUrl = new URL(window.location.href);
+    const formResult = currentUrl.searchParams.get("contact");
+    if (formResult === "success") {
+      contactStatus.textContent = pageIsTurkish ? "Mesajınız gönderildi. Teşekkür ederiz." : "Your message has been sent. Thank you.";
+      contactStatus.dataset.state = "success";
+    } else if (formResult === "error") {
+      contactStatus.textContent = pageIsTurkish ? "Mesaj gönderilemedi. Lütfen tekrar deneyin." : "Your message could not be sent. Please try again.";
+      contactStatus.dataset.state = "error";
+    }
+    if (formResult) {
+      currentUrl.searchParams.delete("contact");
+      window.history.replaceState({}, "", `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`);
+    }
+  }
+
+  const updateTaglineLayout = () => {
+    if (!heroTagline) return;
+    const computed = window.getComputedStyle(heroTagline);
+    const measure = document.createElement("span");
+    measure.textContent = `${firstTaglineText} ${secondTaglineText}`;
+    measure.style.position = "fixed";
+    measure.style.left = "-10000px";
+    measure.style.visibility = "hidden";
+    measure.style.whiteSpace = "nowrap";
+    measure.style.fontFamily = computed.fontFamily;
+    measure.style.fontSize = computed.fontSize;
+    measure.style.fontWeight = computed.fontWeight;
+    measure.style.letterSpacing = computed.letterSpacing;
+    document.body.appendChild(measure);
+    const requiredWidth = measure.getBoundingClientRect().width;
+    measure.remove();
+    const availableWidth = heroTagline.clientWidth - parseFloat(computed.paddingLeft) - parseFloat(computed.paddingRight);
+    heroTagline.classList.toggle("rota-home__tagline--wrapped", requiredWidth > availableWidth);
+  };
+
+  updateTaglineLayout();
+  document.fonts?.ready.then(updateTaglineLayout);
+  if (heroTagline && "ResizeObserver" in window) {
+    new ResizeObserver(updateTaglineLayout).observe(heroTagline);
+  } else {
+    window.addEventListener("resize", updateTaglineLayout, { passive: true });
+  }
+
+  const showTaglineImmediately = () => {
+    if (!heroTagline || !taglineFirst || !taglineSecond) return;
+    taglineFirst.textContent = firstTaglineText;
+    taglineSecond.textContent = secondTaglineText;
+    heroTagline.dataset.typingState = "done";
+  };
+
+  const typeHeroTagline = () => {
+    if (!heroTagline || !taglineFirst || !taglineSecond || !taglineCaret) return;
+    heroTagline.dataset.typingState = "active";
+    let firstIndex = 0;
+    let secondIndex = 0;
+
+    const typeSecondLine = () => {
+      secondIndex += 1;
+      taglineSecond.textContent = secondTaglineText.slice(0, secondIndex);
+      taglineSecond.appendChild(taglineCaret);
+      if (secondIndex < secondTaglineText.length) {
+        window.setTimeout(typeSecondLine, 52);
+        return;
+      }
+      heroTagline.dataset.typingState = "done";
+    };
+
+    const typeFirstLine = () => {
+      firstIndex += 1;
+      taglineFirst.textContent = firstTaglineText.slice(0, firstIndex);
+      taglineFirst.appendChild(taglineCaret);
+      if (firstIndex < firstTaglineText.length) {
+        window.setTimeout(typeFirstLine, 52);
+        return;
+      }
+      window.setTimeout(typeSecondLine, 120);
+    };
+
+    typeFirstLine();
+  };
+
+  if (reducePageMotion) {
+    showTaglineImmediately();
+  } else {
+    window.setTimeout(typeHeroTagline, 900);
+  }
+
+  const startVideo = () => {
+    if (!video || videoStarted) return;
+    videoStarted = true;
+    video.muted = true;
+    video.playsInline = true;
+    void video.play().catch(() => {
+      home?.classList.remove("rota-home--video-loading");
+    });
+  };
+
+  video?.addEventListener("playing", () => {
+    home?.classList.remove("rota-home--video-loading");
+  }, { once: true });
+  startVideo();
+
+  const showMenuPanel = (name: string, moveFocus = false) => {
+    if (!menu) return;
+    menu.dataset.level = name === "main" ? "root" : "child";
+    menuPanels.forEach((panel) => {
+      const active = panel.dataset.menuPanel === name;
+      panel.dataset.active = String(active);
+      panel.setAttribute("aria-hidden", String(!active));
+    });
+    menu.scrollTop = 0;
+    if (moveFocus) {
+      window.setTimeout(() => {
+        const activePanel = menuPanels.find((panel) => panel.dataset.menuPanel === name);
+        activePanel?.querySelector<HTMLElement>("button, a")?.focus();
+      }, 260);
+    }
+  };
+
+  const setMenu = (open: boolean) => {
+    if (!button || !menu) return;
+    button.setAttribute("aria-expanded", String(open));
+    button.setAttribute("aria-label", open ? (document.documentElement.lang === "tr" ? "Menüyü kapat" : "Close menu") : (document.documentElement.lang === "tr" ? "Menüyü aç" : "Open menu"));
+    menu.dataset.open = String(open);
+    menu.setAttribute("aria-hidden", String(!open));
+    document.body.classList.toggle("rota-menu-is-open", open);
+    if (open) showMenuPanel("main");
+  };
+
+  const toggleMenu = () => {
+    if (!button) return;
+    setMenu(button.getAttribute("aria-expanded") !== "true");
+  };
+
+  button?.addEventListener("click", toggleMenu);
+  menuTargets.forEach((target) => {
+    target.addEventListener("click", () => showMenuPanel(target.dataset.menuTarget ?? "main", true));
+  });
+  menuBackButtons.forEach((back) => {
+    back.addEventListener("click", () => showMenuPanel("main", true));
+  });
+  menu?.querySelectorAll<HTMLAnchorElement>("a").forEach((link) => {
+    link.addEventListener("click", () => setMenu(false));
+  });
+
+  if (technologyMarquee && technologyFirstGroup && !useNativeMobileScroll) {
+    let technologyPointerDown = false;
+    let technologyDragging = false;
+    let technologyDragged = false;
+    let technologyPaused = false;
+    let technologyVisible = false;
+    let technologyStartX = 0;
+    let technologyStartScroll = 0;
+    let technologyLastFrame = performance.now();
+    let technologyAnimationFrame = 0;
+    const reduceTechnologyMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const animateTechnologyMarquee = (time: number) => {
+      technologyAnimationFrame = 0;
+      if (reduceTechnologyMotion || !technologyVisible || technologyPaused || technologyPointerDown || technologyDragging || document.hidden) return;
+      const elapsed = Math.min(34, time - technologyLastFrame);
+      technologyLastFrame = time;
+      technologyMarquee.scrollLeft += elapsed * .035;
+      const loopWidth = technologyFirstGroup.scrollWidth;
+      if (loopWidth > 0 && technologyMarquee.scrollLeft >= loopWidth) {
+        technologyMarquee.scrollLeft -= loopWidth;
+      }
+      technologyAnimationFrame = window.requestAnimationFrame(animateTechnologyMarquee);
+    };
+
+    const startTechnologyMarquee = () => {
+      if (technologyAnimationFrame || reduceTechnologyMotion || !technologyVisible || technologyPaused || technologyPointerDown || technologyDragging || document.hidden) return;
+      technologyLastFrame = performance.now();
+      technologyAnimationFrame = window.requestAnimationFrame(animateTechnologyMarquee);
+    };
+
+    new IntersectionObserver((entries) => {
+      technologyVisible = entries[0]?.isIntersecting ?? false;
+      startTechnologyMarquee();
+    }, { threshold: .08 }).observe(technologyMarquee);
+
+    technologyMarquee.addEventListener("focusin", () => { technologyPaused = true; });
+    technologyMarquee.addEventListener("focusout", () => { technologyPaused = false; startTechnologyMarquee(); });
+    technologyMarquee.addEventListener("pointerdown", (event) => {
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      technologyPointerDown = true;
+      technologyDragging = false;
+      technologyDragged = false;
+      technologyStartX = event.clientX;
+      technologyStartScroll = technologyMarquee.scrollLeft;
+    });
+    technologyMarquee.addEventListener("pointermove", (event) => {
+      if (!technologyPointerDown) return;
+      const distance = event.clientX - technologyStartX;
+      if (!technologyDragging && Math.abs(distance) > 5) {
+        technologyDragging = true;
+        technologyDragged = true;
+        technologyPaused = true;
+        technologyMarquee.setPointerCapture(event.pointerId);
+        technologyMarquee.dataset.dragging = "true";
+      }
+      if (!technologyDragging) return;
+      technologyMarquee.scrollLeft = technologyStartScroll - distance;
+    });
+    const finishTechnologyDrag = (event: PointerEvent) => {
+      if (!technologyPointerDown) return;
+      technologyPointerDown = false;
+      if (!technologyDragging) {
+        startTechnologyMarquee();
+        return;
+      }
+      technologyDragging = false;
+      technologyMarquee.dataset.dragging = "false";
+      if (technologyMarquee.hasPointerCapture(event.pointerId)) technologyMarquee.releasePointerCapture(event.pointerId);
+      technologyPaused = technologyMarquee.matches(":focus-within");
+      startTechnologyMarquee();
+    };
+    technologyMarquee.addEventListener("pointerup", finishTechnologyDrag);
+    technologyMarquee.addEventListener("pointercancel", finishTechnologyDrag);
+    window.addEventListener("pointerup", finishTechnologyDrag);
+    window.addEventListener("pointercancel", finishTechnologyDrag);
+    technologyMarquee.addEventListener("click", (event) => {
+      if (!technologyDragged) return;
+      event.preventDefault();
+      event.stopPropagation();
+      technologyDragged = false;
+    }, true);
+    document.addEventListener("visibilitychange", startTechnologyMarquee);
+  }
+
+  const closeAboutImage = () => {
+    if (aboutImageDialog?.open) aboutImageDialog.close();
+    document.body.classList.remove("rota-image-is-open");
+  };
+
+  const openImageModal = (src: string, alt: string, width: number, height: number) => {
+    if (!aboutImageDialog) return;
+    if (imageModalContent) {
+      imageModalContent.src = src;
+      imageModalContent.alt = alt;
+      imageModalContent.width = width;
+      imageModalContent.height = height;
+    }
+    document.body.classList.add("rota-image-is-open");
+    aboutImageDialog.showModal();
+  };
+
+  aboutImageOpen?.addEventListener("click", () => {
+    openImageModal("/media/corporate/about-home-cover.webp", pageIsTurkish ? "Rota Robotik üretim sahası" : "Rota Robotic production facility", 1602, 1191);
+  });
+  expertiseImageOpen?.addEventListener("click", () => {
+    openImageModal("/media/corporate/about-cover.webp", pageIsTurkish ? "Rota Robotik uzmanlıklar görseli" : "Rota Robotic expertise", 1254, 1254);
+  });
+  aboutImageClose?.addEventListener("click", closeAboutImage);
+  aboutImageDialog?.addEventListener("click", (event) => {
+    if (event.target === aboutImageDialog) closeAboutImage();
+  });
+  aboutImageDialog?.addEventListener("close", () => {
+    document.body.classList.remove("rota-image-is-open");
+  });
+
+  const finishBrandIntro = () => {
+    brand?.classList.add("rota-header__brand--ready");
+    if (site?.dataset.introFollowup === "started") return;
+    if (site) site.dataset.introFollowup = "started";
+    const controlsDelay = reducePageMotion ? 0 : 420;
+    window.setTimeout(() => site?.classList.add("rota-site--intro-controls"), controlsDelay);
+    window.setTimeout(() => site?.classList.add("rota-site--intro-beams"), controlsDelay + 260);
+    window.setTimeout(() => site?.classList.add("rota-site--intro-complete"), controlsDelay + 6460);
+  };
+
+  logoWord?.addEventListener("animationend", finishBrandIntro, { once: true });
+  window.setTimeout(finishBrandIntro, 1600);
+  window.setTimeout(() => home?.classList.remove("rota-home--video-loading"), 1400);
+
+  const scheduleMobileBrandPulse = () => {
+    if (!brand || reducePageMotion || !window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
+    const delay = 5000 + Math.random() * 6500;
+    window.setTimeout(() => {
+      if (!document.hidden && menu?.dataset.open !== "true") {
+        brand.classList.add("rota-header__brand--ambient-pulse");
+        window.setTimeout(() => brand.classList.remove("rota-header__brand--ambient-pulse"), 900);
+      }
+      scheduleMobileBrandPulse();
+    }, delay);
+  };
+
+  scheduleMobileBrandPulse();
+
+  const restartHeroVideoLoop = () => {
+    if (!video) return;
+    const safeEnd = Math.min(loopEnd, video.duration || loopEnd);
+    video.currentTime = Math.min(loopStart, Math.max(0, safeEnd - (1 / 30)));
+    void video.play();
+  };
+  video?.addEventListener("timeupdate", () => {
+    if (video.currentTime >= loopEnd) restartHeroVideoLoop();
+  });
+  video?.addEventListener("ended", restartHeroVideoLoop);
+
+  home?.addEventListener("pointermove", (event) => {
+    if (!window.matchMedia("(pointer: fine)").matches) return;
+    const bounds = home.getBoundingClientRect();
+    const x = Math.min(1, Math.max(0, (event.clientX - bounds.left) / bounds.width));
+    const y = Math.min(1, Math.max(0, (event.clientY - bounds.top) / bounds.height));
+    home.style.setProperty("--tagline-x", `${x * 100}%`);
+    home.style.setProperty("--tagline-y", `${y * 100}%`);
+    home.style.setProperty("--tagline-angle", `${-30 + x * 60}deg`);
+  });
+
+  if (home && !reducePageMotion) {
+    let heroScrollFrame = 0;
+    const updateHeroScrollMotion = () => {
+      heroScrollFrame = 0;
+      const bounds = home.getBoundingClientRect();
+      const progress = Math.min(1, Math.max(0, -bounds.top / Math.max(bounds.height, 1)));
+      home.style.setProperty("--hero-scroll", progress.toFixed(3));
+    };
+    const queueHeroScrollMotion = () => {
+      if (heroScrollFrame) return;
+      heroScrollFrame = window.requestAnimationFrame(updateHeroScrollMotion);
+    };
+    updateHeroScrollMotion();
+    window.addEventListener("scroll", queueHeroScrollMotion, { passive: true });
+    window.addEventListener("resize", queueHeroScrollMotion, { passive: true });
+  }
+
+  const currentSectionIndex = () => {
+    const marker = window.scrollY + Math.min(window.innerHeight * .35, 240);
+    let current = 0;
+    snapSections.forEach((section, index) => {
+      if (section.offsetTop <= marker) current = index;
+    });
+    return current;
+  };
+
+  let scrollMapFrame = 0;
+  const updateScrollMap = () => {
+    scrollMapFrame = 0;
+    if (header) header.dataset.scrolled = String(window.scrollY > 24);
+    const activeIndex = Math.min(scrollDots.length - 1, currentSectionIndex());
+    scrollDots.forEach((dot, index) => dot.dataset.active = String(index === activeIndex));
+  };
+
+  const queueScrollMapUpdate = () => {
+    if (scrollMapFrame) return;
+    scrollMapFrame = window.requestAnimationFrame(updateScrollMap);
+  };
+
+  window.addEventListener("scroll", queueScrollMapUpdate, { passive: true });
+  updateScrollMap();
+
+  if (!reducePageMotion && scrollMotionItems.length && "IntersectionObserver" in window) {
+    site?.classList.add("rota-motion-enabled");
+    const scrollMotionObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        entry.target.classList.toggle("rota-motion-visible", entry.isIntersecting);
+      });
+    }, { threshold: .08, rootMargin: "-5% 0px -8%" });
+    scrollMotionItems.forEach((item) => scrollMotionObserver.observe(item));
+  } else {
+    scrollMotionItems.forEach((item) => item.classList.add("rota-motion-visible"));
+  }
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    if (menu?.dataset.open === "true" && menu.dataset.level === "child") {
+      showMenuPanel("main", true);
+      return;
+    }
+    setMenu(false);
+  });
+</script>

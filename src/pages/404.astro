@@ -1,0 +1,39 @@
+---
+import "../styles/rota.css";
+import "../styles/fonts.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex, follow" />
+    <meta name="description" content="The requested Rota Robotik page could not be found. Return to the home page or contact our engineering team." />
+    <title>Page Not Found | Rota Robotik</title>
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+  </head>
+  <body>
+    <main class="not-found">
+      <a class="not-found__brand" href="/" data-home-link><img src="/media/brand/logo.svg" width="363" height="180" alt="Rota Robotic Systems" /></a>
+      <div class="not-found__rings" aria-hidden="true"><i></i><i></i><strong>404</strong></div>
+      <div class="not-found__copy">
+        <p data-en>PAGE NOT FOUND</p><p data-tr hidden>SAYFA BULUNAMADI</p>
+        <h1 data-en>The page you’re looking for isn’t here.</h1><h1 data-tr hidden>Aradığınız sayfa burada bulunmuyor.</h1>
+        <span data-en>Return to the home page or contact our engineering team.</span><span data-tr hidden>Ana sayfaya dönebilir veya mühendislik ekibimizle iletişime geçebilirsiniz.</span>
+        <div><a href="/" data-home-link data-en>Back to Home</a><a href="/tr/" data-home-link data-tr hidden>Ana Sayfaya Dön</a><a href="/contact/" data-contact-link data-en>Contact Us</a><a href="/tr/iletisim/" data-contact-link data-tr hidden>İletişime Geçin</a></div>
+      </div>
+    </main>
+    <script is:inline>
+      const tr = window.location.pathname === "/tr" || window.location.pathname.startsWith("/tr/");
+      document.documentElement.lang = tr ? "tr" : "en";
+      document.title = tr ? "Sayfa Bulunamadı | Rota Robotik" : "Page Not Found | Rota Robotik";
+      document.querySelectorAll("[data-en]").forEach((node) => node.toggleAttribute("hidden", tr));
+      document.querySelectorAll("[data-tr]").forEach((node) => node.toggleAttribute("hidden", !tr));
+    </script>
+  </body>
+</html>
+
+<style>
+  :global(html),:global(body){min-height:100%;margin:0;background:#f5f8f7}.not-found{position:relative;display:grid;min-height:100svh;grid-template-columns:1fr 1fr;align-items:center;gap:clamp(40px,8vw,130px);padding:clamp(120px,14vw,180px) clamp(28px,7vw,110px);overflow:hidden;color:#263242}.not-found::before{position:absolute;inset:0;background:radial-gradient(circle at 74% 36%,rgba(0,168,150,.13),transparent 30%),linear-gradient(120deg,#fff,#edf6f3);content:""}.not-found__brand{position:absolute;z-index:2;top:26px;left:clamp(24px,4vw,62px);width:180px}.not-found__brand img{display:block;width:100%;height:auto}.not-found__rings{position:relative;z-index:1;display:grid;aspect-ratio:1;max-width:520px;place-items:center}.not-found__rings i{position:absolute;inset:8%;border:1px solid rgba(0,168,150,.28);border-radius:50%}.not-found__rings i:nth-child(2){inset:24%;border-color:rgba(10,102,194,.28)}.not-found__rings strong{background:linear-gradient(100deg,#0a66c2,#00a896,#43c463);background-clip:text;color:transparent;font-size:clamp(92px,14vw,210px);font-weight:500;letter-spacing:-.08em}.not-found__copy{position:relative;z-index:1;max-width:650px}.not-found__copy>p{margin:0 0 20px;color:#00a896;font-size:13px;font-weight:700;letter-spacing:.14em}.not-found__copy h1{margin:0;color:#30343a;font-size:clamp(46px,5.4vw,86px);font-weight:500;letter-spacing:-.065em;line-height:.96}.not-found__copy>span{display:block;max-width:540px;margin-top:28px;color:#66717e;font-size:18px;line-height:1.6}.not-found__copy>div{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}.not-found__copy a{padding:14px 21px;border:1px solid rgba(10,102,194,.18);border-radius:999px;background:#fff;color:#0a66c2;font-weight:700;text-decoration:none}.not-found__copy a:first-child{border:0;background:linear-gradient(100deg,#0a66c2,#00a896,#43c463);color:#fff}@media(max-width:760px){.not-found{grid-template-columns:1fr;padding-top:130px;text-align:center}.not-found__rings{width:min(74vw,350px);margin:auto}.not-found__copy>span{margin-inline:auto}.not-found__copy>div{justify-content:center}}
+</style>

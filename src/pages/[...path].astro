@@ -1,0 +1,16 @@
+---
+import LocalizedPage from "../components/LocalizedPage.astro";
+import { legacyRedirects, staticLocalePaths, type RouteKey } from "../i18n/routes";
+
+export function getStaticPaths() {
+  const english = staticLocalePaths("en").filter(({ key }) => key !== "home").map(({ key, path }) => ({ params: { path: path.slice(1, -1) }, props: { routeKey: key } }));
+  const redirects = Object.entries(legacyRedirects).filter(([from]) => from !== "/en/").map(([from, destination]) => ({ params: { path: from.slice(1, -1) }, props: { redirect: destination } }));
+  return [...english, ...redirects];
+}
+
+interface Props { routeKey?: RouteKey; redirect?: string; }
+const { routeKey, redirect } = Astro.props;
+if (redirect) return Astro.redirect(redirect, 308);
+if (!routeKey) return Astro.redirect("/", 308);
+---
+<LocalizedPage locale="en" routeKey={routeKey} />

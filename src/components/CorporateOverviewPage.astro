@@ -1,0 +1,84 @@
+---
+import SubpageFooter from "./SubpageFooter.astro";
+import SubpageHeader from "./SubpageHeader.astro";
+import SubpageMenu from "./SubpageMenu.astro";
+import type { Locale } from "../i18n/config";
+
+interface Props { locale?: Locale }
+const { locale = "tr" } = Astro.props;
+
+const sections = [
+  { number: "01", eyebrow: "Rota Robotik", title: "Hakkımızda", description: "Deneyimli mühendislik ekibimiz, robotik sistemleri tasarımdan devreye almaya kadar tek çatı altında hayata geçirir.", href: "/hakkimizda/", imagePosition: "center 52%" },
+  { number: "02", eyebrow: "Yönümüz", title: "Vizyon & Misyon", description: "Üretimin geleceğini tasarlarken bizi yönlendiren hedefleri, değerleri ve mühendislik yaklaşımını keşfedin.", href: "/vizyon-misyon/", imagePosition: "74% center" },
+  { number: "03", eyebrow: "Güvenilir Süreç", title: "Kalite Politikamız", description: "Kaliteyi ihtiyaç analizinden saha doğrulamasına kadar projenin her adımında kuruyoruz.", href: "/kalite-politikamiz/", imagePosition: "28% 60%" },
+  { number: "04", eyebrow: "Dokümantasyon", title: "Sertifikalar", description: "Kalite, uygunluk ve proje dokümanlarına ilişkin yaklaşımımızı ve belge talep sürecini inceleyin.", href: "/sertifikalar/", imagePosition: "86% 38%" },
+];
+---
+
+<div class="corporate-overview-page" data-corporate-overview>
+  <div class="corporate-overview-page__beams" aria-hidden="true"><i></i><i></i><i></i></div>
+  <SubpageHeader pageName="Kurumsal" locale={locale} />
+  <SubpageMenu locale={locale} />
+
+  <main>
+    <section class="corporate-overview-hero">
+      <div class="corporate-overview-hero__copy">
+        <p class="corporate-overview-eyebrow">Rota Robotik</p>
+        <h1><span>Mühendislik</span> ile <span class="corporate-overview-hero__accent">geleceği tasarlıyoruz.</span></h1>
+        <p>Deneyim, teknoloji ve güçlü iş birliklerini bir araya getirerek üretime değer katan robotik sistemler geliştiriyoruz.</p>
+      </div>
+      <div class="corporate-overview-hero__photo" aria-hidden="true"></div>
+      <div class="corporate-overview-hero__visual" aria-hidden="true"><img src="/media/corporate/about-cover.webp" width="1254" height="1254" alt="" fetchpriority="high" /><i></i><i></i></div>
+      <div class="corporate-overview-hero__stats" aria-label="Kurumsal sayfası özeti"><span><strong>04</strong><small>Kurumsal Başlık</small></span><span><strong>20+</strong><small>Yıllık Deneyim</small></span><span><strong>01</strong><small>Ortak Hedef</small></span></div>
+    </section>
+
+    <section class="corporate-overview-library">
+      <div class="corporate-overview-heading corporate-overview-reveal" data-corporate-overview-reveal>
+        <p class="corporate-overview-eyebrow">Kurumsal Yapı</p>
+        <h2>Rota Robotik’i yakından tanıyın.</h2>
+        <p>Yaklaşımımızı, hedeflerimizi, kalite anlayışımızı ve dokümantasyon sürecimizi bu başlıklardan inceleyebilirsiniz.</p>
+      </div>
+      <div class="corporate-overview-grid">
+        {sections.map((section) => (
+          <a class="corporate-overview-card corporate-overview-reveal" href={section.href} data-corporate-overview-reveal>
+            <div class="corporate-overview-card__image"><img src="/media/corporate/about-cover.webp" width="1254" height="1254" style={`object-position:${section.imagePosition};`} alt="" loading="lazy" decoding="async" /><span>{section.number}</span></div>
+            <div class="corporate-overview-card__copy"><p>{section.eyebrow}</p><h3>{section.title}</h3><span>{section.description}</span><strong>İnceleyin <i aria-hidden="true">→</i></strong></div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="corporate-overview-cta corporate-overview-reveal" data-corporate-overview-reveal>
+      <p class="corporate-overview-eyebrow">Birlikte Tasarlayalım</p><h2>Projenizi doğru mühendislik ekibiyle buluşturalım.</h2><p>Üretim hedefinizi ve ihtiyaçlarınızı konuşmak için ekibimizle iletişime geçin.</p><a href="/iletisim/"><span>İletişime Geçin</span><i aria-hidden="true">→</i></a>
+    </section>
+  </main>
+
+  <SubpageFooter locale={locale} />
+</div>
+
+<script>
+  const corporateOverview = document.querySelector<HTMLElement>("[data-corporate-overview]");
+  const corporateOverviewItems = Array.from(document.querySelectorAll<HTMLElement>("[data-corporate-overview-reveal]"));
+  const corporateOverviewReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!corporateOverviewReducedMotion && "IntersectionObserver" in window) {
+    corporateOverview?.classList.add("corporate-overview-page--enhanced");
+    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => (entry.target as HTMLElement).classList.toggle("corporate-overview-reveal--visible", entry.isIntersecting)), { rootMargin: "0px 0px -12%", threshold: .12 });
+    corporateOverviewItems.forEach((item) => observer.observe(item));
+  }
+</script>
+
+<style>
+  :global(html:has(.corporate-overview-page)) { background: #f7f8f7; scroll-snap-type: none; }
+  :global(body:has(.corporate-overview-page)) { background: #f7f8f7; }
+  .corporate-overview-page { --corporate-overview-gutter: clamp(28px,6vw,92px); position: relative; overflow: clip; background: #f7f8f7; color: #263242; }
+  .corporate-overview-page__beams { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }.corporate-overview-page__beams i { position: absolute; top: -16%; width: 22vw; height: 74%; background: linear-gradient(180deg,rgba(10,102,194,.08),rgba(0,168,150,.04)); clip-path: polygon(35% 0,65% 0,100% 100%,0 100%); transform: rotate(7deg); }.corporate-overview-page__beams i:nth-child(1) { left: 7%; }.corporate-overview-page__beams i:nth-child(2) { right: 20%; height: 86%; opacity: .75; transform: rotate(-8deg); }.corporate-overview-page__beams i:nth-child(3) { right: -4%; top: 27%; height: 70%; background: linear-gradient(180deg,rgba(0,168,150,.07),rgba(67,196,99,.02)); }
+  .corporate-overview-hero { position: relative; display: grid; grid-template-columns: minmax(0,1fr) minmax(390px,.88fr); gap: clamp(42px,7vw,120px); align-items: center; min-height: 100svh; padding: 150px var(--corporate-overview-gutter) 96px; overflow: hidden; }.corporate-overview-hero__copy { position: relative; z-index: 2; max-width: 780px; animation: corporate-overview-copy .75s cubic-bezier(.16,1,.3,1) .2s both; }.corporate-overview-eyebrow { margin: 0 0 17px; color: var(--rota-teal); font-size: 12px; font-weight: 700; letter-spacing: .13em; line-height: 1; text-transform: uppercase; }.corporate-overview-hero h1 { margin: 0; color: #2f353d; font-size: clamp(54px,5.7vw,96px); font-weight: 500; letter-spacing: -.07em; line-height: .91; }.corporate-overview-hero__accent { color: transparent; background: linear-gradient(98deg,var(--rota-blue),var(--rota-teal),var(--rota-green)); background-clip: text; -webkit-background-clip: text; }.corporate-overview-hero__copy > p:last-child { max-width: 650px; margin: 30px 0 0; color: #607086; font-size: clamp(17px,1.2vw,20px); line-height: 1.65; }.corporate-overview-hero__photo { position: absolute; z-index: 0; inset: 88px 0 0 auto; width: 53%; background: linear-gradient(90deg,rgba(247,248,247,.96),rgba(247,248,247,.16)),url('/media/corporate/about-cover.webp') center/cover; opacity: .62; }.corporate-overview-hero__visual { position: relative; z-index: 1; width: min(100%,540px); aspect-ratio: 1; justify-self: center; overflow: hidden; border-radius: 50%; box-shadow: 0 30px 70px rgba(0,61,105,.2); animation: corporate-overview-visual .86s cubic-bezier(.16,1,.3,1) .34s both; }.corporate-overview-hero__visual::after { position: absolute; inset: 0; background: linear-gradient(145deg,rgba(10,102,194,.12),rgba(0,168,150,.34)); content: ""; }.corporate-overview-hero__visual img { width: 100%; height: 100%; object-fit: cover; opacity: .85; }.corporate-overview-hero__visual i { position: absolute; z-index: 2; border: 1px solid rgba(10,102,194,.28); border-radius: 50%; }.corporate-overview-hero__visual i:first-of-type { inset: 10%; }.corporate-overview-hero__visual i:last-of-type { inset: 21%; border-color: rgba(255,255,255,.62); }.corporate-overview-hero__stats { position: absolute; z-index: 3; right: var(--corporate-overview-gutter); bottom: 44px; left: var(--corporate-overview-gutter); display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); max-width: 620px; border-top: 1px solid rgba(10,102,194,.22); }.corporate-overview-hero__stats span { padding-top: 18px; }.corporate-overview-hero__stats strong { display: block; color: var(--rota-blue); font-size: clamp(27px,2.6vw,42px); font-weight: 500; letter-spacing: -.06em; line-height: 1; }.corporate-overview-hero__stats small { display: block; margin-top: 6px; color: #718096; font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; }
+  .corporate-overview-library { position: relative; padding: clamp(92px,11vw,158px) var(--corporate-overview-gutter); background: linear-gradient(145deg,#f4f8f8,#fff 48%,#eef7f1); }.corporate-overview-heading { max-width: 940px; margin-bottom: clamp(44px,6vw,72px); }.corporate-overview-heading h2,.corporate-overview-cta h2 { margin: 0; color: #30343a; font-size: clamp(42px,4.7vw,78px); font-weight: 500; letter-spacing: -.065em; line-height: .94; }.corporate-overview-heading > p:last-child { max-width: 680px; margin: 24px 0 0; color: #647388; font-size: 17px; line-height: 1.6; }.corporate-overview-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: clamp(18px,2vw,30px); max-width: 1420px; }.corporate-overview-card { display: grid; grid-template-columns: minmax(180px,.72fr) minmax(0,1.28fr); min-height: 300px; overflow: hidden; border: 1px solid rgba(10,102,194,.13); border-radius: 22px; background: rgba(255,255,255,.82); box-shadow: 0 14px 38px rgba(0,61,105,.07); color: inherit; text-decoration: none; transition: transform .34s ease,box-shadow .34s ease; }.corporate-overview-card:hover,.corporate-overview-card:focus-visible { box-shadow: 0 24px 52px rgba(0,61,105,.15); transform: translateY(-7px); }.corporate-overview-card__image { position: relative; overflow: hidden; background: #0c376b; }.corporate-overview-card__image::after { position: absolute; inset: 0; background: linear-gradient(145deg,rgba(0,168,150,.16),rgba(7,26,43,.44)); content: ""; }.corporate-overview-card__image img { width: 100%; height: 100%; object-fit: cover; opacity: .8; transition: transform .5s ease; }.corporate-overview-card:hover .corporate-overview-card__image img { transform: scale(1.08); }.corporate-overview-card__image span { position: absolute; z-index: 1; top: 18px; left: 18px; display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid rgba(255,255,255,.8); border-radius: 50%; color: #fff; font-size: 12px; }.corporate-overview-card__copy { display: flex; flex-direction: column; align-items: flex-start; padding: clamp(23px,2.8vw,38px); }.corporate-overview-card__copy > p { margin: 0 0 13px; color: var(--rota-teal); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }.corporate-overview-card h3 { margin: 0; color: #303840; font-size: clamp(26px,2.25vw,36px); font-weight: 500; letter-spacing: -.05em; line-height: 1; }.corporate-overview-card__copy > span { margin-top: 16px; color: #687586; font-size: 15px; line-height: 1.55; }.corporate-overview-card strong { margin-top: auto; padding-top: 18px; color: var(--rota-blue); font-size: 14px; }.corporate-overview-card strong i { margin-left: 8px; font-size: 18px; font-style: normal; }.corporate-overview-cta { position: relative; overflow: hidden; padding: clamp(94px,11vw,165px) var(--corporate-overview-gutter); background: #071b2c; color: #fff; text-align: center; }.corporate-overview-cta::before { position: absolute; top: -70%; left: 50%; width: min(72vw,1000px); aspect-ratio: 1; border: 1px solid rgba(67,196,99,.22); border-radius: 50%; content: ""; transform: translateX(-50%); }.corporate-overview-cta > * { position: relative; z-index: 1; }.corporate-overview-cta .corporate-overview-eyebrow { color: #7be1c2; }.corporate-overview-cta h2 { max-width: 940px; margin: 0 auto; color: #fff; }.corporate-overview-cta > p:not(.corporate-overview-eyebrow) { max-width: 600px; margin: 25px auto 34px; color: rgba(255,255,255,.72); font-size: 18px; line-height: 1.55; }.corporate-overview-cta a { display: inline-flex; gap: 13px; align-items: center; padding: 15px 22px; border-radius: 999px; background: linear-gradient(100deg,var(--rota-blue),var(--rota-teal),var(--rota-green)); color: #fff; font-weight: 700; text-decoration: none; }.corporate-overview-cta a i { font-size: 20px; font-style: normal; }
+  .corporate-overview-page--enhanced .corporate-overview-reveal { opacity: 0; transform: translateY(34px); transition: opacity .72s cubic-bezier(.16,1,.3,1),transform .72s cubic-bezier(.16,1,.3,1); }.corporate-overview-page--enhanced .corporate-overview-reveal--visible { opacity: 1; transform: translateY(0); }.corporate-overview-page--enhanced .corporate-overview-card:nth-child(2) { transition-delay: .07s; }.corporate-overview-page--enhanced .corporate-overview-card:nth-child(3) { transition-delay: .12s; }.corporate-overview-page--enhanced .corporate-overview-card:nth-child(4) { transition-delay: .18s; }
+  @keyframes corporate-overview-copy { from { opacity: 0; transform: translateX(-42px); } to { opacity: 1; transform: translateX(0); } } @keyframes corporate-overview-visual { from { opacity: 0; transform: translateX(42px) scale(.92); } to { opacity: 1; transform: translateX(0) scale(1); } }
+  @media (max-width: 980px) { .corporate-overview-hero { grid-template-columns: 1fr; min-height: 820px; padding-bottom: 150px; }.corporate-overview-hero__visual { width: min(55vw,460px); }.corporate-overview-hero__photo { width: 70%; }.corporate-overview-grid { grid-template-columns: 1fr; }.corporate-overview-card { grid-template-columns: minmax(220px,.72fr) minmax(0,1.28fr); } }
+  @media (max-width: 640px) { .corporate-overview-page { --corporate-overview-gutter: 22px; }.corporate-overview-hero { min-height: 770px; padding-top: 134px; }.corporate-overview-hero h1 { font-size: clamp(46px,14vw,68px); }.corporate-overview-hero__visual { width: min(72vw,370px); }.corporate-overview-hero__photo { top: 72px; width: 115%; opacity: .15; }.corporate-overview-hero__stats { gap: 8px; }.corporate-overview-hero__stats span { text-align: center; }.corporate-overview-hero__stats strong { font-size: 27px; }.corporate-overview-hero__stats small { font-size: 9px; }.corporate-overview-library { padding-block: 78px; }.corporate-overview-heading h2,.corporate-overview-cta h2 { font-size: clamp(42px,12vw,60px); }.corporate-overview-card { grid-template-columns: 1fr; }.corporate-overview-card__image { height: 188px; }.corporate-overview-card__copy { min-height: 235px; }.corporate-overview-cta { padding: 86px 22px; text-align: left; }.corporate-overview-cta > p:not(.corporate-overview-eyebrow) { margin-inline: 0; } }
+  @media (prefers-reduced-motion: reduce) { .corporate-overview-hero__copy,.corporate-overview-hero__visual { animation: none; }.corporate-overview-page--enhanced .corporate-overview-reveal { opacity: 1; transform: none; transition: none; } }
+  .corporate-overview-hero__photo { background-image: linear-gradient(90deg,rgba(247,248,247,.96),rgba(247,248,247,.16)),url('/media/corporate/about-cover.webp'); }
+</style>

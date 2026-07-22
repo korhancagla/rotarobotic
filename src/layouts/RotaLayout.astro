@@ -1,0 +1,182 @@
+---
+import "../styles/rota.css";
+import "../styles/fonts.css";
+import "leaflet/dist/leaflet.css";
+
+interface Props {
+  locale: "tr" | "en";
+  title: string;
+  description: string;
+  canonicalPath?: string;
+  alternatePath?: string;
+  imagePath?: string;
+  imageAlt?: string;
+  preloadImagePath?: string;
+}
+
+const {
+  locale,
+  title,
+  description,
+  canonicalPath = Astro.url.pathname,
+  alternatePath,
+  preloadImagePath,
+} = Astro.props;
+const canonicalUrl = new URL(canonicalPath, Astro.site);
+const englishUrl = new URL(locale === "en" ? canonicalPath : (alternatePath ?? "/"), Astro.site);
+const turkishUrl = new URL(locale === "tr" ? canonicalPath : (alternatePath ?? "/tr/"), Astro.site);
+const imageUrl = new URL("/media/Preview.webp", Astro.site);
+const imageAlt = locale === "tr" ? "Rota Robotik — Geleceğin üretimini tasarlamak" : "Rota Robotic — Engineering the future of manufacturing";
+const organizationUrl = new URL("/", Astro.site);
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${organizationUrl}#organization`,
+      name: "Rota Robotik Sistemler",
+      url: organizationUrl,
+      logo: new URL("/media/brand/logo.svg", Astro.site),
+      foundingDate: "2023",
+      email: "info@rotarobotik.com",
+      telephone: "+90 538 778 81 18",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Yarış Çıkmazı Sokak No:1, Bağımsız Bölüm No:347",
+        addressLocality: "İSTİM Tuzla",
+        addressRegion: "İstanbul",
+        addressCountry: "TR",
+      },
+      sameAs: ["https://www.linkedin.com/company/rota-robotik-sistemler/"],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${organizationUrl}#website`,
+      url: organizationUrl,
+      name: "Rota Robotik Sistemler",
+      inLanguage: ["tr-TR", "en"],
+      publisher: { "@id": `${organizationUrl}#organization` },
+    },
+    {
+      "@type": "WebPage",
+      "@id": `${canonicalUrl}#webpage`,
+      url: canonicalUrl,
+      name: title,
+      description,
+      inLanguage: locale === "tr" ? "tr-TR" : "en",
+      isPartOf: { "@id": `${organizationUrl}#website` },
+      about: { "@id": `${organizationUrl}#organization` },
+      primaryImageOfPage: { "@type": "ImageObject", url: imageUrl },
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="author" content="Rota Robotik Sistemler" />
+    <meta name="theme-color" content="#f7f9f8" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/media/brand/favicon.png" type="image/png" sizes="512x512" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" hreflang="en" href={englishUrl} />
+    <link rel="alternate" hreflang="tr" href={turkishUrl} />
+    <link rel="alternate" hreflang="x-default" href={englishUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Rota Robotik Sistemler" />
+    <meta property="og:locale" content={locale === "tr" ? "tr_TR" : "en_US"} />
+    <meta property="og:locale:alternate" content={locale === "tr" ? "en_US" : "tr_TR"} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:type" content="image/webp" />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+    <meta name="twitter:image:alt" content={imageAlt} />
+    <link rel="preload" href="/fonts/ffgoodpro/FFGoodPro-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href="/fonts/ffgoodpro/FFGoodPro-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href="/media/brand/logo.svg" as="image" type="image/svg+xml" fetchpriority="high" />
+    {preloadImagePath && <link rel="preload" href={preloadImagePath} as="image" type="image/webp" fetchpriority="high" />}
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)}></script>
+  </head>
+  <body data-locale={locale}>
+    <slot />
+    <script>
+      import emailjs from "@emailjs/browser";
+
+      (() => {
+        const EMAILJS_SERVICE_ID = "default_service";
+        const EMAILJS_TEMPLATE_ID = "template_9ep7scd";
+        const EMAILJS_PUBLIC_KEY = "L141UHy_M7TmOVMTS";
+
+        const bindEmailJsForms = () => {
+          if (document.documentElement.dataset.emailjsFormsBound === "true") return;
+
+          emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+          document.documentElement.dataset.emailjsFormsBound = "true";
+
+          document.querySelectorAll<HTMLFormElement>("form[data-emailjs-form]").forEach((form) => {
+            form.addEventListener("submit", async (event) => {
+              event.preventDefault();
+              if (form.dataset.sending === "true" || !form.checkValidity()) return;
+
+              const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+              const status = form.querySelector<HTMLElement>("[data-contact-status], [data-contact-page-status]");
+              if (!button) return;
+
+              const originalButtonContent = button.innerHTML;
+              form.dataset.sending = "true";
+              button.disabled = true;
+              const isTurkish = document.documentElement.lang === "tr";
+              button.textContent = isTurkish ? "Gönderiliyor..." : "Sending...";
+              if (status) {
+                status.textContent = "";
+                delete status.dataset.state;
+              }
+
+              try {
+                await emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, form);
+                form.reset();
+                if (status) {
+                  status.textContent = isTurkish ? "Mesajınız başarıyla gönderildi. En kısa sürede sizinle iletişime geçeceğiz." : "Your message has been sent successfully. We will contact you shortly.";
+                  status.dataset.state = "success";
+                }
+              } catch (error) {
+                const emailJsError = error as { status?: number; text?: string; message?: string };
+                console.error(
+                  `EmailJS form gönderim hatası — durum: ${emailJsError.status ?? "bilinmiyor"}; ayrıntı: ${emailJsError.text ?? emailJsError.message ?? String(error)}`,
+                );
+                if (status) {
+                  status.textContent = isTurkish ? "Mesaj gönderilemedi. Lütfen daha sonra tekrar deneyin." : "Your message could not be sent. Please try again later.";
+                  status.dataset.state = "error";
+                }
+              } finally {
+                form.dataset.sending = "false";
+                button.disabled = false;
+                button.innerHTML = originalButtonContent;
+              }
+            });
+          });
+        };
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", bindEmailJsForms, { once: true });
+        } else {
+          bindEmailJsForms();
+        }
+      })();
+    </script>
+  </body>
+</html>

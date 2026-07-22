@@ -1,0 +1,100 @@
+---
+import Icon from "./Icon.astro";
+import DesktopMenu from "./DesktopMenu.astro";
+import LanguageSwitcher from "./LanguageSwitcher.astro";
+import type { Locale } from "../i18n/config";
+import { navigation } from "../i18n/navigation";
+import { alternatePath, routePath } from "../i18n/routes";
+
+interface Props { locale: Locale; id?: string; languageHref?: string; }
+const { locale, id = "subpage-menu", languageHref = alternatePath(Astro.url.pathname, locale) } = Astro.props;
+const currentYear = new Date().getFullYear();
+const nav = navigation(locale);
+const en = locale === "en";
+const mobileGroups = [
+  { panel: "corporate", ...nav.company }, { panel: "expertise", ...nav.expertise }, { panel: "technologies", ...nav.technologies },
+].map((group) => ({ ...group, items: group.items.map(([label, key]) => ({ label, href: routePath(key, locale) })) }));
+---
+
+<nav class="rota-menu subpage-menu" id={id} data-open="false" data-level="root" aria-label={en ? "Main menu" : "Ana menü"} aria-hidden="true" data-subpage-menu hidden>
+  <DesktopMenu locale={locale} languageHref={languageHref} />
+  <div class="rota-menu__stage">
+    <div class="rota-menu__panel rota-menu__panel--main" data-menu-panel="main" data-active="true" aria-hidden="false">
+      <div class="rota-menu__mobile-language"><LanguageSwitcher locale={locale} href={languageHref} variant="menu" /></div>
+      <div class="rota-menu__main-links">
+        <a href={routePath("home", locale)}><span>{en ? "Home" : "Ana Sayfa"}</span><i class="rota-menu__chevron rota-menu__chevron--next" aria-hidden="true"></i></a>
+        {mobileGroups.map((group) => (
+          <button type="button" data-subpage-menu-target={group.panel} aria-controls={`${id}-panel-${group.panel}`}>
+            <span>{group.title}</span><i class="rota-menu__chevron rota-menu__chevron--down" aria-hidden="true"></i>
+          </button>
+        ))}
+        <a href={nav.references.href}><span>{nav.references.title}</span><i class="rota-menu__chevron rota-menu__chevron--next" aria-hidden="true"></i></a>
+        <a href={nav.contact.href}><span>{nav.contact.title}</span><i class="rota-menu__chevron rota-menu__chevron--next" aria-hidden="true"></i></a>
+      </div>
+    </div>
+
+    {mobileGroups.map((group) => (
+      <div class="rota-menu__panel rota-menu__panel--sub" id={`${id}-panel-${group.panel}`} data-menu-panel={group.panel} data-active="false" aria-hidden="true">
+        <button class="rota-menu__back" type="button" data-subpage-menu-back>
+          <i class="rota-menu__chevron rota-menu__chevron--back" aria-hidden="true"></i>{en ? "Back" : "Geri"}
+        </button>
+        <p class="rota-menu__panel-title">{group.title}</p>
+        <div class="rota-menu__sub-links">
+          {group.items.map((item) => <a href={item.href} title={en ? `Explore ${item.label}` : `${item.label} sayfasını inceleyin`}>{item.label}</a>)}
+        </div>
+      </div>
+    ))}
+  </div>
+  <p class="rota-menu__copyright">{en ? "All rights reserved" : "Tüm hakları saklıdır"} © {currentYear} Rota Robotik</p>
+  <div class="rota-menu__social-rail" aria-label={en ? "Social media" : "Sosyal medya"}>
+    <div class="rota-menu__socials">
+      <a href="https://www.linkedin.com/company/rota-robotik-sistemler/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><Icon name="linkedin" /></a>
+      <a href="https://wa.me/905387788118" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><Icon name="whatsapp" /></a>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const subpageMenuButton = document.querySelector<HTMLButtonElement>("[data-subpage-menu-button]");
+  const subpageMenu = document.querySelector<HTMLElement>("[data-subpage-menu]");
+  const subpageMenuPanels = Array.from(subpageMenu?.querySelectorAll<HTMLElement>("[data-menu-panel]") ?? []);
+  const subpageMenuTargets = Array.from(subpageMenu?.querySelectorAll<HTMLButtonElement>("[data-subpage-menu-target]") ?? []);
+  const subpageMenuBackButtons = Array.from(subpageMenu?.querySelectorAll<HTMLButtonElement>("[data-subpage-menu-back]") ?? []);
+
+  // İlk boyamada stil yüklenmeden masaüstü menüsünün görünmesini engeller.
+  if (subpageMenu) subpageMenu.hidden = false;
+
+  const showSubpageMenuPanel = (name: string, moveFocus = false) => {
+    if (!subpageMenu) return;
+    subpageMenu.dataset.level = name === "main" ? "root" : "child";
+    subpageMenuPanels.forEach((panel) => {
+      const active = panel.dataset.menuPanel === name;
+      panel.dataset.active = String(active);
+      panel.setAttribute("aria-hidden", String(!active));
+    });
+    subpageMenu.scrollTop = 0;
+    if (moveFocus) window.setTimeout(() => subpageMenuPanels.find((panel) => panel.dataset.menuPanel === name)?.querySelector<HTMLElement>("button, a")?.focus(), 260);
+  };
+
+  const setSubpageMenu = (open: boolean) => {
+    if (!subpageMenuButton || !subpageMenu) return;
+    subpageMenuButton.setAttribute("aria-expanded", String(open));
+    const tr = document.documentElement.lang === "tr";
+    subpageMenuButton.setAttribute("aria-label", open ? (tr ? "Menüyü kapat" : "Close menu") : (tr ? "Menüyü aç" : "Open menu"));
+    subpageMenu.dataset.open = String(open);
+    subpageMenu.setAttribute("aria-hidden", String(!open));
+    document.body.classList.toggle("rota-menu-is-open", open);
+    if (open) showSubpageMenuPanel("main");
+  };
+
+  const toggleSubpageMenu = () => {
+    if (!subpageMenuButton) return;
+    setSubpageMenu(subpageMenuButton.getAttribute("aria-expanded") !== "true");
+  };
+
+  subpageMenuButton?.addEventListener("click", toggleSubpageMenu);
+  subpageMenuTargets.forEach((target) => target.addEventListener("click", () => showSubpageMenuPanel(target.dataset.subpageMenuTarget ?? "main", true)));
+  subpageMenuBackButtons.forEach((back) => back.addEventListener("click", () => showSubpageMenuPanel("main", true)));
+  subpageMenu?.querySelectorAll<HTMLAnchorElement>("a").forEach((link) => link.addEventListener("click", () => setSubpageMenu(false)));
+  document.addEventListener("keydown", (event) => { if (event.key === "Escape") setSubpageMenu(false); });
+</script>

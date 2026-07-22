@@ -1,0 +1,33 @@
+---
+import type { Locale } from "../i18n/config";
+import { pages } from "../i18n/pages";
+import { alternatePath, routePath, type RouteKey } from "../i18n/routes";
+import RotaLayout from "../layouts/RotaLayout.astro";
+import CorporateDetailPage from "./CorporateDetailPage.astro";
+import HomePage from "./HomePage.astro";
+import MeasurementDetailPage from "./MeasurementDetailPage.astro";
+import ReferencesPage from "./ReferencesPage.astro";
+import TechnologiesPage from "./TechnologiesPage.astro";
+
+interface Props { locale: Locale; routeKey: RouteKey; }
+const { locale, routeKey } = Astro.props;
+const definition = pages[routeKey];
+const canonicalPath = routePath(routeKey, locale);
+const alternate = alternatePath(canonicalPath, locale);
+---
+
+<RotaLayout
+  locale={locale}
+  title={definition.title[locale]}
+  description={definition.description[locale]}
+  canonicalPath={canonicalPath}
+  alternatePath={alternate}
+  imageAlt={definition.imageAlt[locale]}
+  preloadImagePath={definition.preload}
+>
+  {definition.kind === "home" && <HomePage locale={locale} />}
+  {definition.kind === "corporate" && <CorporateDetailPage locale={locale} page={definition.variant as "about" | "vision" | "quality" | "certificates"} />}
+  {definition.kind === "references" && <ReferencesPage locale={locale} />}
+  {definition.kind === "listing" && <TechnologiesPage locale={locale} variant={definition.variant as "technologies" | "contact" | "expertise"} />}
+  {definition.kind === "detail" && <MeasurementDetailPage locale={locale} variant={definition.variant} />}
+</RotaLayout>

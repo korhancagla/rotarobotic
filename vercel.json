@@ -1,0 +1,30 @@
+{
+  "redirects": [
+    { "source": "/en", "destination": "/", "permanent": true },
+    { "source": "/en/", "destination": "/", "permanent": true },
+    { "source": "/kurumsal", "destination": "/tr/hakkimizda/", "permanent": true },
+    { "source": "/kurumsal/", "destination": "/tr/hakkimizda/", "permanent": true },
+    { "source": "/hakkimizda/:path*", "destination": "/tr/hakkimizda/:path*", "permanent": true },
+    { "source": "/vizyon-misyon/:path*", "destination": "/tr/vizyon-misyon/:path*", "permanent": true },
+    { "source": "/kalite-politikamiz/:path*", "destination": "/tr/kalite-politikamiz/:path*", "permanent": true },
+    { "source": "/sertifikalar/:path*", "destination": "/tr/sertifikalar/:path*", "permanent": true },
+    { "source": "/referanslar/:path*", "destination": "/tr/referanslar/:path*", "permanent": true },
+    { "source": "/uzmanliklar/proses-tasarim-ve-simulasyon/:path*", "destination": "/tr/uzmanliklar/proses-tasarim-ve-simulasyon/:path*", "permanent": true },
+    { "source": "/uzmanliklar/mekanik-tasarim/:path*", "destination": "/tr/uzmanliklar/mekanik-tasarim/:path*", "permanent": true },
+    { "source": "/uzmanliklar/3d-olcum-ve-kalite-kontrol/:path*", "destination": "/tr/uzmanliklar/3d-olcum-ve-kalite-kontrol/:path*", "permanent": true },
+    { "source": "/uzmanliklar/talasli-imalat/:path*", "destination": "/tr/uzmanliklar/talasli-imalat/:path*", "permanent": true },
+    { "source": "/uzmanliklar/mekanik-elektrik-imalat/:path*", "destination": "/tr/uzmanliklar/mekanik-elektrik-imalat/:path*", "permanent": true },
+    { "source": "/uzmanliklar/elektrik-projelendirme/:path*", "destination": "/tr/uzmanliklar/elektrik-projelendirme/:path*", "permanent": true },
+    { "source": "/uzmanliklar/otomasyon-yazilim/:path*", "destination": "/tr/uzmanliklar/otomasyon-yazilim/:path*", "permanent": true },
+    { "source": "/uzmanliklar/robot-yazilimi-ve-offline-programlama/:path*", "destination": "/tr/uzmanliklar/robot-yazilimi-ve-offline-programlama/:path*", "permanent": true },
+    { "source": "/uzmanliklar/sistem-kurulum-ve-devreye-alma/:path*", "destination": "/tr/uzmanliklar/sistem-kurulum-ve-devreye-alma/:path*", "permanent": true },
+    { "source": "/uzmanliklar/:path*", "destination": "/tr/uzmanliklar/:path*", "permanent": true },
+    { "source": "/teknolojiler/kaynak-teknolojileri/:path*", "destination": "/tr/teknolojiler/kaynak-teknolojileri/:path*", "permanent": true },
+    { "source": "/teknolojiler/tasima-sistemleri/:path*", "destination": "/tr/teknolojiler/tasima-sistemleri/:path*", "permanent": true },
+    { "source": "/teknolojiler/montaj-sistemleri/:path*", "destination": "/tr/teknolojiler/montaj-sistemleri/:path*", "permanent": true },
+    { "source": "/teknolojiler/mastikleme-dozajlama-sistemleri/:path*", "destination": "/tr/teknolojiler/mastikleme-dozajlama-sistemleri/:path*", "permanent": true },
+    { "source": "/teknolojiler/isbirlikci-robotlu-sistemler/:path*", "destination": "/tr/teknolojiler/isbirlikci-robotlu-sistemler/:path*", "permanent": true },
+    { "source": "/teknolojiler/:path*", "destination": "/tr/teknolojiler/:path*", "permanent": true },
+    { "source": "/iletisim/:path*", "destination": "/tr/iletisim/:path*", "permanent": true }
+  ]
+}
